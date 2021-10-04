@@ -1,0 +1,20 @@
+SHOW_PREQ = True
+SHOW_RREQ = True
+SHOW_OINC = True
+
+TRUE TRUE TRUE TRUE
+--------------------------------------
+SHOW_PREQ = True
+SHOW_RREQ = False
+
+TRUE TRUE FALSE TRUE
+--------------------------------------
+SHOW_PREQ = False
+SHOW_RREQ = True
+
+TRUE FALSE TRUE TRUE
+--------------------------------------
+SHOW_PREQ = False
+SHOW_RREQ = False
+
+TRUE FALSE FALSE TRUE
