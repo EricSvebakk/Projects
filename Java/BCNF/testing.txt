@@ -1,0 +1,39 @@
+B=A
+D=G
+BCF=E
+BCF=D
+AF=B
+CDE=B
+
+{B}+ = {B,A}
+{D}+ = {D,G}
+{B,C,F}+ = {B,C,F,E,D,A,G}
+{A,F}+ = {A,F,B}
+{C,D,E}+ = {C,D,E,B,A,G}
+
+(BCF) = (BCF DE) = (BCFDE AG)
+
+A B C D E F G
+AA BA CA DA EA FA GA
+
+3
+3 * 3
+3 * (3 * 3)
+
+
+B+ = {B,A,F,C, K,J,I}
+
+
+A,B,C,D,E,F,G,H,I,J,K
+B->A
+A->FC
+AF->G
+BG->K
+
+
+
+B,N,E,U,T,K
+BU->K
+B->N
+B->E
+U->T

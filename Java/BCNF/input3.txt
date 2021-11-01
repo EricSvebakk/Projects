@@ -1,0 +1,4 @@
+BNEUTK
+BU->K
+B->NE
+U->T
