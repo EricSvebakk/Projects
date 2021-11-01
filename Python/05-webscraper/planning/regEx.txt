@@ -1,0 +1,20 @@
+# RegEx examples
+
+# All subjects (including those with a dash)
+# ([A-Z]+\-?[A-Z]+[0-9]{4})
+
+# all subjects (including those with a dash), with a code less than 4000
+# ([A-Z]+\-?[A-Z]+[0-3]{1}[0-9]{3})
+
+# subjects starting with IN, with a code less than 400, except IN1900
+# (IN[0-4]{1}[0-9]{3})(?!IN1900)
+
+# subjects starting with IN or MAT
+# ((?:IN|MAT)...)
+
+# Ignore if starts with dash
+# ((?<!\-)...)
+
+# dummy test text
+# IN-MAT1200 LOL9999 -GREE1000& YE-E-T! YE--ET1000c
+# YE-ET1234 IN1000\ IN-BIOS99, ?IN-BIOS3456 STK-MAT2011

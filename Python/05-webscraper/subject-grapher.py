@@ -2,6 +2,8 @@ import graphviz
 import os
 
 os.environ["PATH"] += os.pathsep + 'C:\\Program Files\\Graphviz\\bin'
+file_name = "uio_subjects"
+
 
 # =============================================
 class Vertex:
@@ -17,6 +19,7 @@ def edge(node1, node2, status):
 	node1.ni.add(node2)
 	node2.tuo[node1] = status
 	# node2.tuo.add(node1)
+
 
 # =============================================
 def buildgraph(lines):
@@ -54,27 +57,6 @@ def buildgraph(lines):
 	
 	return graph
 
-# =============================================
-# def topsort(graph):
-# 	V = graph.values()
-# 	stack = []
-# 	result = []
-	
-# 	for v in V:
-# 		if (len(v.ni)) == 0:
-# 			stack.append(v)
-			
-# 	while len(stack) > 0:
-# 		v = stack.pop()
-# 		result.append(v.elem)
-		
-# 		for w in v.tuo:
-# 			w.ni.discard(v)
-			
-# 			if len(w.ni) == 0:
-# 				stack.append(w)
-				
-# 	return result
 		
 # =============================================
 def drawgraph(gDict):
@@ -92,15 +74,14 @@ def drawgraph(gDict):
 				dot.edge(key, vertex.elem, color="green")
 			else:
 				dot.edge(key, vertex.elem, color="red")
-				
 	
-	dot.render("sub-prereq-graph", format="svg", view=True)
-	
+	dot.render(f"{file_name}_graph", format="svg", view=True)
+
+
 # =============================================
-with open("sub-prereq-scrape", "r") as f:
-	lines = f.readlines()
-		
-	graph = buildgraph(lines)
+with open(file_name, "r") as file:
+	
+	graph = buildgraph(file.readlines())
 	
 	# for key in graph:
 	# 	if len(graph[key].tuo) != 0:
@@ -109,5 +90,3 @@ with open("sub-prereq-scrape", "r") as f:
 	# 		print(f"{key}")
 
 	drawgraph(graph)
-	
-	# print(topsort(graph))

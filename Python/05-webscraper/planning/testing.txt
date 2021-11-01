@@ -18,3 +18,27 @@ SHOW_PREQ = False
 SHOW_RREQ = False
 
 TRUE FALSE FALSE TRUE
+
+
+
+
+XNOR
+0|0|1
+1|0|0
+0|1|0
+1|1|1
+
+(not (A or B)) or (A and B)
+
+
+START: 
+show prereq - true
+show recreq - true
+require prereq - False
+require recreq - False
+
+
+
+
+
+PREQ : 
