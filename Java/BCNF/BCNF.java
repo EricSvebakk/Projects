@@ -3,8 +3,12 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
+
+import javax.naming.spi.DirStateFactory.Result;
+
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 // import java.lang.Character.Subset;
@@ -19,11 +23,9 @@ public class BCNF {
 	public static void main(String[] args) {
 		
 		Scanner s1;
-		Scanner s2;;
 		
 		try {
 			s1 = new Scanner(new File("input1.txt"));
-			s2 = new Scanner(new File("input3.txt"));
 		}
 		
 		catch(FileNotFoundException e) {
@@ -32,20 +34,13 @@ public class BCNF {
 		}
 		
 		Relation relation1 = new Relation(s1.nextLine());
-		Relation relation2 = new Relation(s2.nextLine());
-		
 		
 		while (s1.hasNextLine()) {
 			relation1.addFD(s1.nextLine());
 		}
 		
-		while (s2.hasNextLine()) {
-			relation2.addFD(s2.nextLine());
-		}
-		
-		
 		System.out.println(relation1);
-		System.out.println(relation2);
+		System.out.println(relation1.getBCNF("CDE") + "\n");
 	}
 }
 
@@ -54,6 +49,9 @@ class Relation {
 	
 	String allAttributes;
 	HashMap<String, String> allFDs;
+	String allCAs;
+	HashSet<String> allCKs;
+	
 	
 	int recI = 0;
 	int length = 0;
@@ -64,6 +62,9 @@ class Relation {
 		
 		this.allAttributes = r;
 		this.allFDs = new HashMap<>();
+		
+		this.allCAs = findCandidateAttributes(this.allFDs);
+		this.allCKs = findCandidateKeys(this.allCAs, this.allAttributes, this.allFDs);
 	}
 	
 	
@@ -123,8 +124,8 @@ class Relation {
 	 * @param attributes contains all elements to include in closure
 	 * @return A closure of all elements related to input attributes
 	 */
-	public String getClosure(String attributes) {
-		return closureRecursion(attributes, 0);
+	public String getClosure(String attributes, HashMap<String, String> FDs) {
+		return closureRecursion(attributes, FDs, 0);
 	}
 	
 	
@@ -134,7 +135,7 @@ class Relation {
 	 * @param size of closure, used for recursion-condition
 	 * @return A closure of all elements related to attributes
 	 */
-	private String closureRecursion(String attributes, int size) {
+	private String closureRecursion(String attributes, HashMap<String, String> FDs, int size) {
 		
 		HashSet<String> combos = new HashSet<>();
 		String newAttributes = "" + attributes;
@@ -144,9 +145,9 @@ class Relation {
 			
 			String attribute = String.valueOf(attr);	
 			
-			if (allFDs.containsKey(attribute) && !newAttributes.contains(allFDs.get(attribute))) {
+			if (FDs.containsKey(attribute) && !newAttributes.contains(FDs.get(attribute))) {
 				
-				for (char i : allFDs.get(attribute).toCharArray()) {
+				for (char i : FDs.get(attribute).toCharArray()) {
 					
 					if (!newAttributes.contains(String.valueOf(i))) {
 						newAttributes += String.valueOf(i);
@@ -157,9 +158,9 @@ class Relation {
 			combos = findCombos("", newAttributes, length);
 			
 			for (String i : combos) {
-				if (allFDs.containsKey(i)) {
+				if (FDs.containsKey(i)) {
 					
-					for (char j : allFDs.get(i).toCharArray()) {
+					for (char j : FDs.get(i).toCharArray()) {
 						if (!newAttributes.contains(String.valueOf(j))) {
 							
 							newAttributes += String.valueOf(j);
@@ -173,7 +174,7 @@ class Relation {
 			newAttributes = String.valueOf(temp);
 			
 			if (newAttributes.length() != size) {
-				newAttributes = closureRecursion(newAttributes, newAttributes.length());
+				newAttributes = closureRecursion(newAttributes, FDs, newAttributes.length());
 			}
 		}
 
@@ -219,62 +220,23 @@ class Relation {
 	 * Finds all candidate-keys up to a certain length, using createCombo()
 	 * @param keyLength limitation for key length
 	 */
-	public HashSet<String> findCandidateKeys(String candidateAttributes, String attributes) {
+	public HashSet<String> findCandidateKeys(String candidateAttributes, String attributes, HashMap<String, String> FDs) {
 		
-		
+
 		HashSet<String> candidateKeys = new HashSet<>();
 		
 		HashSet<String> combos = findCombos(candidateAttributes, attributes, attributes.length());
 		
-		
 		for (String attr : combos) {
 
-			String closure_temp = getClosure(attr);
-						
+			String closure_temp = getClosure(attr, FDs);
 			
 			if (closure_temp.length() == attributes.length()) {
-				
-				
-				// System.out.println(closure_temp + " " + attr);
-				
-				combos = findCombos("", attr, attributes.length());
-				
-				
-				// boolean flag = true;
-				// for (String combo : combos) {
-					
-				// 	char[] a = combo.toCharArray();
-					
-					
-				// 	for (char key : candidateAttributes.toCharArray()) {
-						
-				// 		char[] b = key.toCharArray();
-						
-				// 		Arrays.sort(a);
-				// 		Arrays.sort(b);
-						
-				// 		if (Arrays.equals(a, b)) {
-				// 			flag = false;
-				// 		}
-						
-				// 	}
-				// }
-				
-				
-				// if (flag) {
-
-				// 	char[] key = keys.toCharArray();
-				// 	Arrays.sort(key);
-					
-				// }
-				
 				candidateKeys.add(attr);
 			}
 		}
 		
-		
 		HashSet<String> copy = new HashSet<>(candidateKeys);
-		
 		
 		for (String a : candidateKeys) {
 			
@@ -283,9 +245,9 @@ class Relation {
 			
 			for (String b : temp) {
 				
-				
 				String shortest = "";
 				String longest = "";
+				
 				if (a.length() < b.length()) {
 					shortest = a;
 					longest = b;
@@ -293,12 +255,10 @@ class Relation {
 					shortest = b;
 					longest = a;
 				}
-				// System.out.print(a + " " + b + "|" + shortest);
 				
 				int matches = 0;
 				for (char ac : a.toCharArray()) {
 					for (char bc : b.toCharArray()) {
-						
 						if (String.valueOf(ac).equals(String.valueOf(bc))) {
 							matches++;
 						}
@@ -306,7 +266,6 @@ class Relation {
 				}
 				
 				if (matches == shortest.length()) {
-				// System.out.println("|| " + longest);
 					copy.remove(longest);
 				}
 			}
@@ -344,6 +303,12 @@ class Relation {
 			
 			if (matchesLeft == key.length() && matchesRight == FDs.get(key).length()) {
 				filter.put(key, FDs.get(key));
+				// System.out.println("YES");
+			}
+			else {
+				// System.out.println(key + " " + key.length() + " " + matchesLeft);
+				// System.out.println(FDs.get(key) + " " + FDs.get(key).length() + " " + matchesRight);
+				// System.out.println();
 			}
 		} 
 		
@@ -351,51 +316,182 @@ class Relation {
 	}
 	
 	
-	public HashSet<String> findBCNF(HashSet<String> candidateKeys, HashMap<String,String> FDs) {
+	public boolean isBCNF(String keyFD, HashSet<String> CKs) {
 		
-		HashSet<String> BCNF = new HashSet<>();
-		
-		for (String attr : FDs.keySet()) {
-			for (String key : candidateKeys) {
-				
-				int matches = 0;
-				for (char i : key.toCharArray()) {
-					if (attr.contains(String.valueOf(i))) {
-						matches++;
-					}
+		for (String ckey : CKs) {
+			
+			int matches = 0;
+			for (char i : ckey.toCharArray()) {
+				if (keyFD.contains(String.valueOf(i))) {
+					matches++;
 				}
-				
-				if (matches == key.length()) {
-					BCNF.add(attr);
-					// System.out.println("BCNF: YES | " + attr);
-				}
+			}
+			
+			if (matches == ckey.length()) {
+				// System.out.println("YES\n");
+				return true;
 			}
 		}
 		
-		HashSet<String> copy = new HashSet<>(FDs.keySet());
-		copy.removeAll(BCNF);
+		// System.out.println("NO\n");
 		
-		
-		// System.out.println(copy);
-		
-		String longest = "";
-		for (String FD : copy) {
-			
-			String temp = getClosure(FD);
-			
-			if (temp.length() > longest.length()) {
-				longest = temp;
-			}
-		}
-		
-		HashMap<String,String> temp = filterFDs(longest, FDs);
-		
-		// System.out.println("FILTER: " + temp);
-		
-		
-		return BCNF;
+		return false;
 	}
 	
+	class Data {
+		private String R = "";
+		private String closure = "";
+		private HashSet<String> CK = new HashSet<>();
+		private boolean valid = true;
+		
+		public void setVariables(String R, String closure, HashSet<String> CK) {
+			this.R = R;
+			this.closure = closure;
+			this.CK = CK;
+		}
+		
+		public void setNotValid() {
+			valid = false;
+		}
+		
+		public boolean getValidity() {
+			return valid;
+		}
+		
+		public String toString() {
+			return R + "(" + closure + ")";
+		}
+	}
+	
+	public HashSet<Data> getBCNF(String keyFD) {
+		
+		String R = "R";
+		
+		HashMap<String, Data> data = new HashMap<>();
+		
+		data.put(R, new Data());
+		data.get(R).setVariables(R, allAttributes, allCKs);
+		
+		if (!isBCNF(keyFD, allCKs)) {
+			data.get(R).setNotValid();
+			System.out.println(data.get(R) + " " + data.get(R).CK);
+			data = BCNF_rec(keyFD, allAttributes, data, R, 0);
+		}
+		
+		System.out.println();
+		
+		HashSet<Data> result = new HashSet<>();
+		for (String i : data.keySet()) {
+			if (data.get(i).valid) {
+				result.add(data.get(i));
+			}
+		}
+		
+		return result;
+	}
+	
+	private HashMap<String, Data> BCNF_rec(String notBCNF, String closure, HashMap<String, Data> data, String R, int index) {
+		
+		
+		String R1 = R + "1";
+		String R2 = R + "2";
+		
+		data.put(R1, new Data());
+		String R1Closure = getClosure(notBCNF, allFDs);
+		HashMap<String, String> filtertemp = filterFDs(R1Closure, allFDs);
+		
+		data.get(R1).setVariables(
+			R1,
+			R1Closure,
+			findCandidateKeys("", R1Closure, filtertemp)
+		);
+		
+		// System.out.println(data.get(R1) + " " + data.get(R1).CK);
+		
+		// findCandidateKeys(notBCNF, closure, allFDs);
+		
+		data.put(R2, new Data());
+		data.get(R2).setVariables(
+			R2,
+			closure,
+			data.get(R).CK
+		);
+			
+		for (char i : data.get(R1).closure.toCharArray()) {
+			if (data.get(R2).closure.contains(String.valueOf(i)) && !notBCNF.contains(String.valueOf(i))) {
+				data.get(R2).closure = data.get(R2).closure.replace(String.valueOf(i), "");
+			}
+		}
+		
+		// String R2Closure = getClosure(notBCNF, allFDs);
+		HashMap<String, String> filtertemp2 = filterFDs(data.get(R2).closure, allFDs);
+		
+		// data.get(R2).closure = R2Closure;
+		data.get(R2).CK = findCandidateKeys("", data.get(R2).closure, filtertemp2);
+		
+		// System.out.println(data.get(R2) + " " + data.get(R2).CK);
+		
+		// if (true) {
+		// 	return null;
+		// }
+		
+		String pad = String.format("%" + (1 + (8 * index++)) + "s", "");
+		System.out.println();
+		System.out.println(pad + notBCNF + "+ = {" + closure + "}");
+		System.out.println(pad + data.get(R1) + " " + data.get(R1).CK);
+		System.out.println(pad + data.get(R2) + " " + data.get(R2).CK);
+		System.out.println();
+		
+		
+		// HashSet<String> R1FD = new HashSet<>();
+		// R1FD.add(notBCNF);
+		
+		// HashSet<String> R2FD = new HashSet<>();
+		// R2FD.add(data.get(R).CK);
+		
+		HashMap<String, String> filter;
+		filter = filterFDs(data.get(R1).closure, allFDs);
+		
+		// System.out.println(R1FD + " " + R2FD);
+		
+		for (String i : filter.keySet()) {
+			if (isBCNF(i, data.get(R1).CK)) {
+				System.out.println(pad + i + " → " + filter.get(i) + " gjelder og er gyldig for " + R1);
+			}
+		}
+		
+		for (String i : filter.keySet()) {
+			if (!isBCNF(i, data.get(R1).CK)) {
+				System.out.print(pad + i + " → " + allFDs.get(i) + " gjelder og bryter med BCNF fordi ");
+				System.out.println(i + " er ikke en supernøkkel for " + R1);
+				
+				data.get(R1).setNotValid();
+				data = BCNF_rec(i, data.get(R1).closure, data, R1, index);
+				break;
+			}
+		}
+		
+		filter = filterFDs(data.get(R2).closure, allFDs);
+		
+		for (String i : filter.keySet()) {
+			if (isBCNF(i, data.get(R2).CK)) {
+				System.out.println(pad + i + " → " + filter.get(i) + " gjelder og er gyldig for " + R2);
+			}
+		}
+		
+		for (String i : filter.keySet()) {
+			if (!isBCNF(i, data.get(R2).CK)) {
+				System.out.print(pad + i + " → " + allFDs.get(i) + " gjelder og bryter med BCNF fordi ");
+				System.out.println(i + " er ikke en supernøkkel for " + R2);
+				
+				data.get(R2).setNotValid();
+				data = BCNF_rec(i, data.get(R2).closure, data, R2, index);
+				break;
+			}
+		}
+		
+		return data;
+	}
 	
 	/**
 	 * Shows information about the relation and related functional dependencies.
@@ -419,28 +515,25 @@ class Relation {
 		}
 		
 		
-		String CA = findCandidateAttributes(allFDs);		
 		s += "\nCA\n";
-		s += "[" + CA + "]\n\n";
+		s += "[" + this.allCAs + "]\n\n";
 		
 		
-		HashSet<String> CK = findCandidateKeys(CA, allAttributes);
 		s += "CK\n";
-		s += CK + "\n\n";
+		s += this.allCKs + "\n\n";
 		
-		
-		// HashMap<String,String> filter = filterFDs("ABF", allFDs);
-		// System.out.println("filter: " + filter);
 		
 		s += "FDs in BCNF\n";
-		s += findBCNF(CK, allFDs) + "\n\n";
+		for (String key : allFDs.keySet()) {
+			if (isBCNF(key, this.allCKs)) {
+				s += "- " + key + "\n";
+			}
+		}
+		s += "\n";
 		
-		
-		for (String FD : allFDs.keySet()) {
-			
-			String closure = getClosure(FD);
+		for (String FD : allFDs.keySet()) {			
+			String closure = getClosure(FD, allFDs);
 			String pad = String.format("%" + (length + 1 - FD.length()) + "s", "");
-			
 			s +=  FD + "+" + pad + " = " + closure + "\n";
 		}
 		
