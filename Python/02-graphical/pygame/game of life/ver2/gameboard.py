@@ -1,246 +1,292 @@
 
 from os import system as sys
 from random import randint
+
+import pygame
 from cell import Cell
 
 class Gameboard:
+	
+	def __init__(self, pygame, size, survive=[2,3], born=[3], wrapAround=False):
+		"""The Gameboard class-object requires a number
+		for rows and columns to initialize"""
+		
+		self._pygame = pygame
+		
+		(self._width, self._height) = self._pygame.display.get_surface().get_size()
+		self._rows = size
+		self._cols = size
+		self._grid = []
+		
+		self._updateFrequency = 5
+		self._pauseFrequency = 80
+		self._pygame.FPS = self._pauseFrequency
+		self._allowUpdate = True
 
-    # The Gameboard class-object requires
-    # a number for rows and columns to initialize
-    def __init__(self, pygame, size, survive=[2,3], born=[3], wrapAround=False):
-        self._pygame = pygame
-        self._width, self._height  = self._pygame.display.get_surface().get_size()
-        self._rows = size
-        self._cols = size
-        self._grid = []
+		self._wrapAround = wrapAround
+		
+		self._mouseMode = 1
+		
+		self._selectedCellX = 0
+		self._selectedCellY = 0
+		
+		self._survive = survive
+		self._born = born
 
-        self._wrapAround = wrapAround
-        
-        self._survive = survive
-        self._born = born
+		self.generate()
 
-        # The board is automatically generated after
-        # the class is called in the main python file
-        self.generate()
+	def generate(self):
+		""" A method for creating the board with the specified\n
+		dimensions and filling it with cells."""
 
-    # A method for creating the board with the specified
-    # dimensions and filling it with cells.
-    def generate(self):
+		self._grid = []
 
-        self._grid = []
+		# Loop for creating each row
+		for y in range(self._cols):
+			self._grid.append([])
 
-        # Loop for creating each row
-        for y in range(self._cols):
-            self._grid.append([])
+			# Loop for adding cells to each row
+			for x in range(self._rows):
+				
+				
+				cell = Cell(self._pygame)
 
-            # Loop for adding cells to each row
-            for x in range(self._rows):
-                
-                
-                cell = Cell(self._pygame)
+				# Each cell has a 1/3 chance to start
+				# generation 0 being alive
+				if randint(0, 2) == 1:
+					cell.alive()
 
-                # Each cell has a 1/3 chance to start
-                # generation 0 being alive
-                if randint(0, 2) == 1:
-                    cell.alive()
+				self._grid[y].append(cell)
+	
+	def pause(self):
+		self._allowUpdate = True
+		self._pygame.FPS = self._pauseFrequency
+		
+	def unpause(self):
+		self._pygame.FPS = self._updateFrequency
+		self._allowUpdate = False
+	
+	def isPaused(self):
+		return self._allowUpdate
+		
+	def updateFrequency(self, increment):
+		self._updateFrequency += increment
+		self._pygame.FPS = self._updateFrequency
+	
+	def getFrequency(self):
+		return self._updateFrequency
 
-                self._grid[y].append(cell)
-                
+	# A method for drawing the current state of the board
+	def drawBoard(self, screen, debug=False):
 
-    # A method for drawing the current state of the board
-    def drawBoard(self, screen, xBPos, yBPos, debug=False):
+		cWidth = self._width / self._rows
+		cHeight = self._height / self._cols
+		b = [255, 50, 0]
 
-        cWidth = self._width / self._rows
-        cHeight = self._height / self._cols
-        b = [255, 50, 0]
+		# self._grid[self._selectedCellX][self._selectedCellY].draw(
+		# 	self._selectedCellX * cWidth,
+		# 	self._selectedCellY * cHeight,
+		# 	cWidth,
+		# 	cHeight,
+		# 	(255, 0, 0),
+		# 	screen
+		# 	)
 
-        for y in range(self._cols):
-            for x in range(self._rows):
+		for y in range(self._cols):
+			for x in range(self._rows):
 
-                xPos = x * cWidth
-                yPos = y * cHeight
+				xPos = x * cWidth
+				yPos = y * cHeight
 
-                obj = self._grid[y][x]
-                
-                if obj.isUnlocked():
-                    if obj.isAlive():
-                        colour = (b[0], b[0], b[0])
-                    else:
-                        colour = (b[1], b[1], b[1])
-                else:
-                    colour = (b[2], b[2], b[2])
-                
-                if obj.isAlive() or not obj.isUnlocked():
-                    obj.draw(xPos, yPos, cWidth, cHeight, colour, screen)
+				obj = self._grid[y][x]
+				
+				if obj.isUnlocked():
+					if obj.isAlive():
+						colour = (b[0], b[0], b[0])
+					else:
+						colour = (b[1], b[1], b[1])
+				else:
+					colour = (b[2], b[2], b[2])
+				
+				if obj.isAlive() or not obj.isUnlocked():
+					obj.draw(xPos, yPos, cWidth, cHeight, colour, screen)
 
-                if x == y and x == self._cols-1 - y:
-                    obj.draw(xPos, yPos, cWidth, cHeight, (0, 0, 255), screen)
+				if x == y and x == self._cols-1 - y:
+					obj.draw(xPos, yPos, cWidth, cHeight, (0, 0, 255), screen)
 
-                if x == y and x == self._cols-2 - y:
-                    obj.draw(xPos, yPos, cWidth, cHeight, (0, 0, 255), screen)
+				if x == y and x == self._cols-2 - y:
+					obj.draw(xPos, yPos, cWidth, cHeight, (0, 0, 255), screen)
 
-        self._grid[yBPos][xBPos].draw(xBPos * cWidth, yBPos * cHeight, cWidth, cHeight, (255, 0, 0), screen)
+	#
+	def clearBoard(self):
+		
+		for y in range(self._cols):
+			for x in range(self._rows):
 
-    #
-    def clearBoard(self):
-        
-        for y in range(self._cols):
-            for x in range(self._rows):
+				self._grid[y][x].dead()
+				self._grid[y][x].unlock()
 
-                self._grid[y][x].dead()
+	# A method which returns all neighbouring cells to a specified cell-position
+	def findNeighbours(self, xC:int, yC:int) -> list:
 
-    # A method which returns all neighbouring cells to a specified cell-position
-    def findNeighbours(self, xC:int, yC:int) -> list:
+		neighbours = []
 
-        neighbours = []
+		# iterates over the cells "above" and
+		# "below" of a specified cell-position
+		for yi in range(-1, 2):
+			yi += yC
 
-        # iterates over the cells "above" and
-        # "below" of a specified cell-position
-        for yi in range(-1, 2):
-            yi += yC
+			# y-positions which are too small
+			# or too large are skipped
+			if self._wrapAround:
+				if yi < 0:
+					yi = self._cols-1
+					
+				elif yi > self._cols-1:
+					yi = 0
+			else:
+				if yi < 0 or yi > self._cols-1:
+					continue
+			
+			# iterates over the cells "left" and
+			# "right" of a specified cell-position
+			for xi in range(-1, 2):
+				xi += xC
 
-            # y-positions which are too small
-            # or too large are skipped
-            if self._wrapAround:
-                if yi < 0:
-                    yi = self._cols-1
-                    
-                elif yi > self._cols-1:
-                    yi = 0
-            else:
-                if yi < 0 or yi > self._cols-1:
-                    continue
-            
-            # iterates over the cells "left" and
-            # "right" of a specified cell-position
-            for xi in range(-1, 2):
-                xi += xC
+				# x-positions which are too small
+				# or too large are skipped
+				if self._wrapAround:
+					if xi < 0:
+						xi = self._rows-1
 
-                # x-positions which are too small
-                # or too large are skipped
-                if self._wrapAround:
-                    if xi < 0:
-                        xi = self._rows-1
+					elif xi > self._rows-1:
+						xi = 0
+				else:
+					if xi < 0 or xi > self._rows-1:
+						continue
 
-                    elif xi > self._rows-1:
-                        xi = 0
-                else:
-                    if xi < 0 or xi > self._rows-1:
-                        continue
+				# The cell specified for findNeighbours() is 
+				# not included among the list of neighbours
+				if yi == yC and xi == xC:
+					continue
+				
+				# The remainder of positions (which are all valid positions)
+				# are added to the list of neighbours
+				else:
+					neighbours.append(self._grid[yi][xi])
 
-                # The cell specified for findNeighbours() is 
-                # not included among the list of neighbours
-                if yi == yC and xi == xC:
-                    continue
-                
-                # The remainder of positions (which are all valid positions)
-                # are added to the list of neighbours
-                else:
-                    neighbours.append(self._grid[yi][xi])
+		return neighbours
 
-        return neighbours
+	# A method which follows the rules of "The Game Of Life" and
+	# updates every cell on the gameboard and increases the current generation
+	def update(self):
 
-    # A method which follows the rules of "The Game Of Life" and
-    # updates every cell on the gameboard and increases the current generation
-    def update(self):
+		changeToAlive = []
+		changeToDead = []
 
-        changeToAlive = []
-        changeToDead = []
+		# Nested for-loop for iterating over every cell
+		for y in range(self._cols):
+			for x in range(self._rows):
+				
+				# Gets the surrounding neighbour cells for
+				# the cell with position (x,y)
+				neighbours = self.findNeighbours(x, y)
+				aliveNeighbours = 0
 
-        # Nested for-loop for iterating over every cell
-        for y in range(self._cols):
-            for x in range(self._rows):
-                
-                # Gets the surrounding neighbour cells for
-                # the cell with position (x,y)
-                neighbours = self.findNeighbours(x, y)
-                aliveNeighbours = 0
+				for neighbour in neighbours:
+					if neighbour.isAlive():
+						aliveNeighbours += 1
 
-                for neighbour in neighbours:
-                    if neighbour.isAlive():
-                        aliveNeighbours += 1
+				# An if-statement which determines if a cell
+				# updates from alive to dead in the next generation
+				if self._grid[y][x].isAlive():
+					if aliveNeighbours not in self._survive:
+						changeToDead.append(self._grid[y][x])
 
-                # An if-statement which determines if a cell
-                # updates from alive to dead in the next generation
-                if self._grid[y][x].isAlive():
-                    if aliveNeighbours not in self._survive:
-                        changeToDead.append(self._grid[y][x])
+				# An if-statement which determines if a cell
+				# updates from dead to alive in the next generation
+				else:
+					if aliveNeighbours in self._born:
+						changeToAlive.append(self._grid[y][x])
 
-                # An if-statement which determines if a cell
-                # updates from dead to alive in the next generation
-                else:
-                    if aliveNeighbours in self._born:
-                        changeToAlive.append(self._grid[y][x])
+		# Two for-loops for flipping the state of certain cells
+		for cell in changeToAlive:
+			cell.alive()
+		for cell in changeToDead:
+			cell.dead()
 
-        # Two for-loops for flipping the state of certain cells
-        for cell in changeToAlive:
-            cell.alive()
-        for cell in changeToDead:
-            cell.dead()
+	def setMouseMode(self, _mouseMode):
+		self._mouseMode = _mouseMode
 
-    #
-    def selectWithMouse(self, mouseX, mouseY):
-        
-        obj = None
-        
-        cWidth = self._width / self._rows
-        cHeight = self._height / self._cols
+	#
+	def selectWithMouse(self, mouseX, mouseY):
+		
+		if not self.isPaused():
+			return 
+		
+		obj = None
+		
+		cWidth = self._width / self._rows
+		cHeight = self._height / self._cols
 
-        keyX = (mouseX / cWidth) + cWidth/2
-        keyY = (mouseY / cHeight) + cHeight/2
+		# keyX = 0
+		# keyX = 0
 
-        for y in range(self._cols):
-            for x in range(self._rows):
+		for y in range(self._cols):
+			for x in range(self._rows):
 
-                x1 = x * cWidth
-                y1 = y * cHeight
-                x2 = x1 + cWidth
-                y2 = y1 + cHeight
-                obj = self._grid[y][x]
+				x1 = x * cWidth
+				y1 = y * cHeight
+				x2 = x1 + cWidth
+				y2 = y1 + cHeight
+				obj = self._grid[y][x]
 
-                if mouseX > x1 and mouseX < x2:
-                    if mouseY > y1 and mouseY < y2:
+				if mouseX >= x1 and mouseX < x2:
+					if mouseY >= y1 and mouseY < y2:
+						
+						if self._mouseMode == 1:
+							obj.alive()
+						elif self._mouseMode == 2:
+							obj.lock()
+						elif self._mouseMode == 3:
+							obj.dead()
+							obj.unlock()
+							
+						self._selectedCellX = x
+						self._selectedCellY = y
+						# keyX = x
+						# keyY = y
+	
+		# print("POS:", keyX, keyY)
+		# return (keyX, keyY)
 
-                        if obj.isAlive() and obj.isUnlocked():
-                            obj.dead()
-                            obj.lock()
+	#
+	# def selectWithKeys(self, keyX, keyY):
 
-                        elif not obj.isAlive() and not obj.isUnlocked():
-                            obj.unlock()
+	#     cWidth = self._width / self._rows
+	#     cHeight = self._height / self._cols
 
-                        elif not obj.isAlive() and obj.isUnlocked():
-                            obj.alive()
-    
-        print(int(keyX), int(keyY))
-        return (int(keyX), int(keyY))
+	#     keyX = (keyX * cWidth) + cWidth/2
+	#     keyY = (keyY * cHeight) + cHeight/2
 
-    #
-    # def selectWithKeys(self, keyX, keyY):
+	#     for y in range(self._cols):
+	#         for x in range(self._rows):
 
-    #     cWidth = self._width / self._rows
-    #     cHeight = self._height / self._cols
+	#             x1 = x * cWidth
+	#             y1 = y * cHeight
+	#             x2 = x1 + cWidth
+	#             y2 = y1 + cHeight
+	#             obj = self._grid[y][x]
 
-    #     keyX = (keyX * cWidth) + cWidth/2
-    #     keyY = (keyY * cHeight) + cHeight/2
+	#             if keyX > x1 and keyX < x2:
+	#                 if keyY > y1 and keyY < y2:
 
-    #     for y in range(self._cols):
-    #         for x in range(self._rows):
+	#                     if obj.isAlive() and obj.isUnlocked():
+	#                         obj.dead()
+	#                         obj.lock()
 
-    #             x1 = x * cWidth
-    #             y1 = y * cHeight
-    #             x2 = x1 + cWidth
-    #             y2 = y1 + cHeight
-    #             obj = self._grid[y][x]
+	#                     elif not obj.isAlive() and not obj.isUnlocked():
+	#                         obj.unlock()
 
-    #             if keyX > x1 and keyX < x2:
-    #                 if keyY > y1 and keyY < y2:
-
-    #                     if obj.isAlive() and obj.isUnlocked():
-    #                         obj.dead()
-    #                         obj.lock()
-
-    #                     elif not obj.isAlive() and not obj.isUnlocked():
-    #                         obj.unlock()
-
-    #                     elif not obj.isAlive() and obj.isUnlocked():
-    #                         obj.alive()
+	#                     elif not obj.isAlive() and obj.isUnlocked():
+	#                         obj.alive()
