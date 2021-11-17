@@ -1,0 +1,53 @@
+
+R(A,B,C,D,E,F,G)
+
+FDer:
+1. CDE → B
+2. AF → B
+3. B → A
+4. BCF → D
+4. BCF → E
+5. D → G
+
+
+CDE → B bryter BNCF fordi CDE er ikke en suppernøkkel for R.
+
+CDE+ = {C,D,E,B,A,G}
+
+	R1 = {C,D,E,B,A,G} og KN = {C,D,E}
+	CDE → B gjelder og er gyldig
+	
+	B → A gjelder og er ugyldig fordi B er ikke en suppernøkkel for R1
+	B+ = {B,A}
+		R11 = {A,B} og KN = {B}
+		B → A gjelder og er gyldig
+		
+		R12 = {B,C,D,E,G} og KN = {C,D,E}
+		CDE → B gjelder og er gyldig
+		
+		D → G gjelder og er ugyldig fordi D er ikke en suppernøkkel for R12
+		D+ = {D,G}
+			R121 = {D,G} og KN = {D}
+			D → G gjelder og er gyldig
+			
+			R122 = {D,B,C,E} og KN = {C,D,E}
+			CDE → B gjelder og er gyldig
+	
+	D → G gjelder og er ugyldig fordi D er ikke en suppernøkkel for R1
+	D+ = {D,G}
+		R12 = {D,G} og KN = {D}
+		D → G gjelder og er gyldig
+	
+	R2 = {C,D,E,F} og KN = {C,D,E,F}
+	CDE → B gjelder ikke
+	BCF → D gjelder ikke
+	BCF → E gjelder ikke
+	AF → B gjelder ikke
+	B → A gjelder ikke
+	D → G gjelder ikke
+	
+R brytes ned til
+R11 = {A,B}
+R121 = {D,G}
+R122 = {D,B,C,E}
+R2 = {C,D,E,F}
