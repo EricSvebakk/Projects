@@ -7,7 +7,7 @@
 # ([A-Z]+\-?[A-Z]+[0-3]{1}[0-9]{3})
 
 # subjects starting with IN, with a code less than 400, except IN1900
-# (IN[0-4]{1}[0-9]{3})(?!IN1900)
+# (?!IN1900)(IN[0-4]{1}[0-9]{3})
 
 # subjects starting with IN or MAT
 # ((?:IN|MAT)...)

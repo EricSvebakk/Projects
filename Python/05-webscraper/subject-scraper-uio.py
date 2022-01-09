@@ -4,17 +4,17 @@ import re
 from bs4 import BeautifulSoup
 
 
-URL = "https://www.uio.no/studier/emner/jus/jus"
+URL = "https://www.uio.no/studier/emner/matnat/ifi"
 FILE_NAME = "uio_subjects"
 
 SHOW_MSUB = True
 SHOW_RSUB = True
 SHOW_NREQ = False
 
-REGEXPR_1 = "((?:JUR|JUS)[0-9]{4}[A-Z]?)"
+REGEXPR_1 = "(?!IN1900)(IN[0-3]{1}[0-9]{3}[A-Z]?)"
 REGEXPR_2 = REGEXPR_1
 
-RELATE_TO = None
+RELATE_TO = "IN1000"
 
 try:
 	open(FILE_NAME, 'w').close()
@@ -73,13 +73,21 @@ with open(FILE_NAME, "a") as file:
 			if (len(MSUB_text + RSUB_text) > 0):
 				
 				if RELATE_TO:
-					if RELATE_TO in MSUB_text:
-						print(f"{SUBJ_name}  {RELATE_TO}", end="")
-						file.write(f"{SUBJ_name}  {RELATE_TO}\n")
+					
+					text = f"{SUBJ_name}{MSUB_text}{RSUB_text}"
+					
+					if RELATE_TO in text:
+						print(f"{SUBJ_name}{MSUB_text}{RSUB_text}", end="")
+						file.write(f"{SUBJ_name}{MSUB_text}{RSUB_text}\n")
+					
+					# if RELATE_TO in 
+					# if RELATE_TO in MSUB_text:
+					# 	print(f"{SUBJ_name}  {RELATE_TO}", end="")
+					# 	file.write(f"{SUBJ_name}  {RELATE_TO}\n")
 						
-					elif RELATE_TO in RSUB_text:
-						print(f"{SUBJ_name} *{RELATE_TO}", end="")
-						file.write(f"{SUBJ_name} *{RELATE_TO}\n")
+					# elif RELATE_TO in RSUB_text:
+					# 	print(f"{SUBJ_name} *{RELATE_TO}", end="")
+					# 	file.write(f"{SUBJ_name} *{RELATE_TO}\n")
 					
 					
 				else:
