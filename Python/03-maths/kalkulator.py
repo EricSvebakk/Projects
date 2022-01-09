@@ -19,7 +19,7 @@ while (baseX := input(f"{'Base X:':<{pad}}")) != "0":
     
     # Prints an error-message if a base is not an integer
     # Resets terminal content and the user may try again
-    except:
+    except ValueError:
         system("cls")
         print("Try again. (The base must be an integer value)")
         continue
