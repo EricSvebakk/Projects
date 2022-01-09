@@ -28,9 +28,9 @@ class Gameboard:
 		self.backgroundCellColour = (50, 50, 50)
 		self.wallCellColour = (0, 0, 0)
 		
-		self.startColour = (255, 0, 255)
-		self.endColour = (255, 255, 255)
-		self.pathColour = (0, 80, 0)
+		self.startColour = (0, 255, 255)
+		self.endColour = (255, 0, 255)
+		self.pathColour = (100, 100, 255)
 		
 		self.closedSetColour = (255, 0, 0)
 		self.openSetColour = (100, 200, 100)
@@ -236,7 +236,8 @@ class Gameboard:
 					colour = self.pathColour
 
 				elif cell in self.oldPath:
-					colour = self.closedSetColour
+					# colour = self.closedSetColour
+					colour = self.backgroundCellColour
 
 				elif cell in self.openSet:
 					colour = self.openSetColour
@@ -297,7 +298,7 @@ class Gameboard:
 		if not self.isPaused():
 			return
 
-		obj = None
+		obj1 = None
 
 		cWidth = self.width / self.size
 		cHeight = self.height / self.size
@@ -312,14 +313,23 @@ class Gameboard:
 				y1 = y * cHeight
 				x2 = x1 + cWidth
 				y2 = y1 + cHeight
-				obj = self.grid[y][x]
+				
 
 				if mouseX >= x1 and mouseX < x2:
 					if mouseY >= y1 and mouseY < y2:
 						
+						obj1 = self.grid[y][x]
+						obj2 = self.grid[y+1][x]
+						obj3 = self.grid[y-1][x]
+						obj4 = self.grid[y][x+1]
+						obj5 = self.grid[y][x-1]
 						
 						if self._mouseMode == 1:
-							obj.wall = True
+							obj1.wall = True
+							obj2.wall = True
+							obj3.wall = True
+							obj4.wall = True
+							obj5.wall = True
 							
 							# ADD 'PAUSE WHEN MOUSEDOWN'
 							# ADD 'RESETDATA() IF DRAW'
@@ -337,9 +347,9 @@ class Gameboard:
 								
 								
 						elif self._mouseMode == 3:
-							print(obj)
-							print("wall:      ", obj.wall)
-							print("path:      ", obj in self.path)
-							print("openSet:   ", obj in self.openSet)
-							print("closedSet: ", obj in self.closedSet)
+							print(obj1)
+							print("wall:      ", obj1.wall)
+							print("path:      ", obj1 in self.path)
+							print("openSet:   ", obj1 in self.openSet)
+							print("closedSet: ", obj1 in self.closedSet)
 							# obj.wall = False
