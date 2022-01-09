@@ -1,0 +1,49 @@
+lon,lat,name,type,sjid
+10.75566383380521, 59.91109482593572, Oslo S, foot, 1
+10.751326, 59.912268, Jernbanetorget, foot, 1
+10.751326, 59.912268, Jernbanetorget, metro, 1
+10.743256, 59.913437, Stortinget, metro, 1
+10.732339, 59.91529, Nationaltheatret, metro, 1
+10.714666, 59.930181, Majorstuen, metro, 1
+10.716174, 59.940205, Blindern, metro, 1
+10.720867, 59.943704, Forskningsparken, metro, 1
+10.732194, 59.946754, Ullevål stadion, metro, 1
+10.732194, 59.946754, Ullevål stadion, foot, 1
+10.728758975065565, 59.95108954745218, Blindern vgs., foot, 1
+
+10.75566383380521, 59.91109482593572, Oslo S, foot, 2
+10.751326, 59.912268, Jernbanetorget, foot, 2
+10.751326, 59.912268, Jernbanetorget, metro, 2
+10.743256, 59.913437, Stortinget, metro, 2
+10.732339, 59.91529, Nationaltheatret, metro, 2
+10.714647, 59.930279, Majorstuen, metro, 2
+10.714647, 59.930279, Majorstuen, foot, 2
+10.716088, 59.929528, Majorstuen, foot, 2
+10.716088, 59.929528, Majorstuen, bus, 2
+10.724083, 59.932267, Marienlyst, localBus, 2
+10.729405, 59.934866, Vestre Aker kirke, localBus, 2
+10.731983, 59.936266, Ullevål sykehus, localBus, 2
+10.730231, 59.937902, Ullevålsalléen, localBus, 2
+10.729702, 59.940933, John Colletts plass, localBus, 2
+10.731658, 59.944634, Eventyrveien, localBus, 2
+10.732782, 59.947221, Ullevål stadion T, localBus, 2
+10.731368, 59.949713, Ullevål stadion, localBus, 2
+10.728905, 59.951139, Blindern vgs., bus, 2
+
+10.754663, 59.910049, Oslo S, rail, 3
+10.780583, 59.920895, Tøyen stasjon, local, 3
+10.78064, 59.941666, Grefsen stasjon, local, 3
+10.771783, 59.951739, Nydalen stasjon, local, 3
+10.782925, 59.966105, Kjelsås stasjon, rail, 3
+10.782925, 59.966105, Kjelsås stasjon, foot, 3
+10.781925, 59.965745, Kjelsås stasjon, foot, 3
+10.781925, 59.965745, Kjelsås stasjon, bus, 3
+10.776762, 59.966148, Stillatorvet, localBus, 3
+10.770303, 59.963686, Svensenga, localBus, 3
+10.762451, 59.958078, Korsvollbakken, localBus, 3
+10.754835, 59.95913, Havnabakken, localBus, 3
+10.744577, 59.961365, Nordberghjemmet, localBus, 3
+10.735311, 59.961183, Kongleveien, localBus, 3
+10.732796, 59.957684, Nordbergveien, localBus, 3
+10.728501, 59.953919, Solvang, localBus, 3
+10.728752, 59.951087, Blindern vgs., bus, 3

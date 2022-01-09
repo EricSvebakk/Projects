@@ -1,0 +1,36 @@
+Program structure:
+
+-------------------------------
+
+gadm36-data.py
+* gadm36-zip -> geojson + csv (index for choropleth)
+
+kml-data.py
+* kml -> csv (timestamped locations)
+
+-------------------------------
+
+update-geojson.py
+* geojson + relevant csv -> updated geojson
+
+find-travel.py
+* csv + geojson -> new csv (# visits per location)
+
+old   method :
+old++ method : 
+new   method : 2768s (46.13min)
+
+-------------------------------
+
+show-scatter.py
+* csv -> plotly scatter mapbox
+
+show-choropleth.py
+* geojson + csv -> plotly choropleth mapbox
+
+-------------------------------
+
+bokeh-map.py
+
+strip-geojson.py (?????)
+* geojson -> geojson
