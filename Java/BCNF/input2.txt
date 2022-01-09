@@ -1,5 +1,0 @@
-ABCDEFGHIJK
-B->A
-A->FC
-AF->G
-BG->K

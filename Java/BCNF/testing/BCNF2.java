@@ -1,38 +1,43 @@
+package testing;
 
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
-import javax.naming.spi.DirStateFactory.Result;
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-// import java.lang.Character.Subset;
-// import java.time.temporal.Temporal;
-// import java.util.ArrayList;
-// import javax.crypto.Cipher;
-// import javax.print.attribute.standard.Sides;
 
-
-public class BCNF {
+public class BCNF2 {
 	
 	public static void main(String[] args) {
 		
+		Relation2 relation = new Relation2(new File("input6.txt"));
 		
-		Relation relation1 = new Relation(new File("input1.txt"));
+		Scanner input = new Scanner(System.in);
+		String text = null;
 		
-		System.out.println(relation1);
+		while (text != "") {
 		
-		System.out.println(relation1.getBCNF("CDE") + "\n");
+			System.out.println(relation);
+			text = input.nextLine();
+		
+			if (text.equals("NF")) {
+				// relation.find
+			}
+		}
+		
+		input.close();
+		
+		// System.out.println(relation1.getBCNF("CDE") + "\n");
 	}
 }
 
 
-class Relation {
+class Relation2 {
 	
 	HashMap<String, String> allFDs;
 	HashMap<String, String> allClosures;
@@ -40,10 +45,11 @@ class Relation {
 	HashSet<String> allBCNF;
 	String allAttributes;
 	String allCAs;
+	// String allSKs;
 	
 	int length = 0;
 	
-	public Relation(File f) {
+	public Relation2(File f) {
 		
 		Scanner s;
 		try {
@@ -55,9 +61,11 @@ class Relation {
 			return;
 		}
 
-		this.allAttributes = s.nextLine();
-		this.allFDs = new HashMap<>();
 		
+		ArrayList<String> d = new ArrayList<>(Arrays.asList(s.nextLine().split("#")));
+		this.allAttributes = d.get(0);
+		
+		this.allFDs = new HashMap<>();
 		while (s.hasNextLine()) {
 			String[] a = s.nextLine().split("->");
 
@@ -71,9 +79,11 @@ class Relation {
 		this.allCKs = findCandidateKeys(this.allCAs, this.allAttributes, this.allFDs);
 		
 		this.allClosures = new HashMap<>();
-		for (String i : this.allFDs.keySet()) {
-			
+		for (String FD : this.allFDs.keySet()) {
+			this.allClosures.put(FD, getClosure(FD, allFDs));
 		}
+		
+		s.close();
 	}
 	
 	/**
@@ -280,7 +290,7 @@ class Relation {
 	 * @param
 	 * @param
 	 */
-	public HashMap<String, String> filterFDs(String closure, HashMap<String,String> FDs) {
+	private HashMap<String, String> filterFDs(String closure, HashMap<String,String> FDs) {
 		
 		HashMap<String, String> filter = new HashMap<>();
 		
@@ -443,15 +453,19 @@ class Relation {
 		HashMap<String, String> filterR1 = filterFDs(data.get(R1).closure, allFDs);
 		HashMap<String, String> filterR2 = filterFDs(data.get(R2).closure, allFDs);
 		
+		// if (true) {
+		// 	return null;
+		// }
+		
 		for (String i : filterR1.keySet()) {
 			if (isBCNF(i, data.get(R1).CK)) {
-				System.out.println(pad + i + " → " + filterR1.get(i) + " gjelder og er gyldig for " + R1);
+				System.out.println(pad + i + " -> " + filterR1.get(i) + " gjelder og er gyldig for " + R1);
 			}
 		}
 		
 		for (String i : filterR1.keySet()) {
 			if (!isBCNF(i, data.get(R1).CK)) {
-				System.out.print(pad + i + " → " + allFDs.get(i) + " gjelder og bryter med BCNF fordi ");
+				System.out.print(pad + i + " -> " + allFDs.get(i) + " gjelder og bryter med BCNF fordi ");
 				System.out.println(i + " er ikke en supernøkkel for " + R1);
 				
 				data.get(R1).setValidity(false);
@@ -462,13 +476,13 @@ class Relation {
 		
 		for (String i : filterR2.keySet()) {
 			if (isBCNF(i, data.get(R2).CK)) {
-				System.out.println(pad + i + " → " + filterR2.get(i) + " gjelder og er gyldig for " + R2);
+				System.out.println(pad + i + " -> " + filterR2.get(i) + " gjelder og er gyldig for " + R2);
 			}
 		}
 		
 		for (String i : filterR2.keySet()) {
 			if (!isBCNF(i, data.get(R2).CK)) {
-				System.out.print(pad + i + " → " + allFDs.get(i) + " gjelder og bryter med BCNF fordi ");
+				System.out.print(pad + i + " -> " + allFDs.get(i) + " gjelder og bryter med BCNF fordi ");
 				System.out.println(i + " er ikke en supernøkkel for " + R2);
 				
 				data.get(R2).setValidity(false);
@@ -478,6 +492,13 @@ class Relation {
 		}
 		
 		return data;
+	}
+	
+	/*
+	 * WIP
+	 */
+	private String findRelationNormalForm() {
+		return "";
 	}
 	
 	/**
@@ -499,7 +520,6 @@ class Relation {
 
 			s += c + pad + "-> " + allFDs.get(c) + "\n";
 		}
-		
 		s += "\nCA\n";
 		s += "[" + this.allCAs + "]\n\n";
 		s += "CK\n";
@@ -514,10 +534,9 @@ class Relation {
 		
 		s += "\n";
 		
-		for (String FD : allFDs.keySet()) {			
-			String closure = getClosure(FD, allFDs);
+		for (String FD : allClosures.keySet()) {
 			String pad = String.format("%" + (length + 1 - FD.length()) + "s", "");
-			s +=  FD + "+" + pad + " = " + closure + "\n";
+			s += FD + "+" + pad + " = " + this.allClosures.get(FD) + "\n";
 		}
 		
 		s += line;
