@@ -1,0 +1,31 @@
+query FindTripQuery($from: String!, $to: String!) {
+  trip(
+    from: {
+      place: $from
+    }
+    to: {
+      place: $to
+    }
+  ) {
+    tripPatterns {
+      walkDistance
+      duration
+      legs {
+        mode
+        duration
+        distance
+        line {
+          name
+          id
+        }
+      }
+    }
+  }
+}
+
+query stopsQuery {
+  stopPlaces {
+    id
+    name
+  }
+}

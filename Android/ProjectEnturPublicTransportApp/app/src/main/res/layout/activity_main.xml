@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="20dp"
+    tools:context=".MainActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <AutoCompleteTextView
+            android:id="@+id/editText_from"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:dropDownHeight="100dp"
+            android:hint="from"
+            android:imeOptions="actionDone"
+            android:inputType="textNoSuggestions"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.213"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.088" />
+
+        <AutoCompleteTextView
+            android:id="@+id/editText_to"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:dropDownHeight="100dp"
+            android:hint="to"
+            android:imeOptions="actionDone"
+            android:inputType="textNoSuggestions"
+            app:layout_constraintEnd_toEndOf="@+id/editText_from"
+            app:layout_constraintStart_toStartOf="@+id/editText_from"
+            app:layout_constraintTop_toBottomOf="@+id/editText_from" />
+
+        <Button
+            android:id="@+id/button_result"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Find"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/editText_to" />
+
+        <TextView
+            android:id="@+id/text_number"
+            android:layout_width="30dp"
+            android:layout_height="wrap_content"
+            android:text="N"
+            android:textAlignment="viewEnd"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="@+id/text_dummy"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/text_dummy" />
+
+        <TextView
+            android:id="@+id/text_dummy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingEnd="20dp"
+            android:text="Number of Trips: "
+            android:textAlignment="textEnd"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="@+id/button_result"
+            app:layout_constraintEnd_toStartOf="@+id/text_number"
+            app:layout_constraintTop_toTopOf="@+id/button_result" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerview_vehicles"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        android:background="@color/green_secondary"
+        android:scrollbars="vertical"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toTopOf="@+id/button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.6"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Go To Map"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
