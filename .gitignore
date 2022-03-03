@@ -1,2 +1,10 @@
 Bedpres/
 Java/**/*.class
+**/data
+**/node_modules
+**/geopandas
+**/package.json
+**/package-lock.json
+**/__pycache__
+**/*.tsv.gz
+**/*.tsv
