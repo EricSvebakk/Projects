@@ -28,7 +28,7 @@ async function findTrip() {
 			for (let j = 0; j < trip[i].legs.length; j++) {
 				
 				
-				if (false) {
+				if (true) {
 					console.log(trip[0].legs[j])
 					// let journey = trip[0].legs[i].serviceJourney.journeyPattern
 					// console.log(journey)
@@ -96,6 +96,34 @@ async function findTrip() {
 	}
 }
 
+async function getTripPatterns() {
+	
+	try {
+		const trip = await enturClient.getTripPatterns(
+			{
+				from: {
+					// name: 'Ryllikvegen, Lillehammer',
+					coordinates: {
+						latitude: 59.912268,
+						longitude: 10.751326
+					},
+				},
+				to: {
+					place: 'NSR:StopPlace:337',
+					name: 'Oslo S, Oslo'
+				},
+				searchDate: new Date(),
+			}
+		)
+		
+		console.log(trip)
+		console.log(trip[0].legs)
+	}
+	catch (error) {
+		console.log(error)
+	}
+}
+		
 async function getVenue() {
 	try {
 		// const features = await enturClient.
@@ -120,4 +148,5 @@ async function getVenue() {
 }
 
 findTrip()
+// getTripPatterns()
 // getVenue()

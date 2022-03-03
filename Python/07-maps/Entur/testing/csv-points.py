@@ -10,10 +10,10 @@ import dash
 
 CODE = "RUT"
 
-df1 = pd.read_csv(f"{CODE}/shapes.csv")
-df2 = pd.read_csv(f"{CODE}/stops.csv")
-df3 = pd.read_csv(f"{CODE}/trips.csv")
-df4 = pd.read_csv(f"{CODE}/routes.csv")
+df1 = pd.read_csv(f"data/{CODE}/shapes.csv")
+df2 = pd.read_csv(f"data/{CODE}/stops.csv")
+df3 = pd.read_csv(f"data/{CODE}/trips.csv")
+df4 = pd.read_csv(f"data/{CODE}/routes.csv")
 
 # ==========================================================
 
@@ -26,9 +26,22 @@ Oslo = {
 	# "altitude": [0, 800],
 }
 
-# for i in Oslo.keys():
-# 	df1 = df1.query(f"{i} >= {Oslo[i][0]}")
-# 	df1 = df1.query(f"{i} < {Oslo[i][1]}")
+Tromso = {
+	f"{PREFIX}_lon": [18.75, 19.10],
+	f"{PREFIX}_lat": [69.61, 69.74],
+}
+
+AREA = Tromso
+
+# for i in Tromso.keys():
+# 	df1 = df1.query(f"{i} >= {AREA[i][0]}")
+# 	df1 = df1.query(f"{i} < {AREA[i][1]}")
+
+# -------------------------------------------------------
+
+# df1 = df1.loc[df1["shape_pt_lat"] df1["shape_pt_lat"].unique()]
+
+# df1 = df1.drop_duplicates(subset=["shape_pt_lat", "shape_pt_lon"])
 
 # ==========================================================
 
@@ -43,32 +56,9 @@ Oslo = {
 # # USE FILTER TO GET VALID POINTS FROM DF1 (shapes.csv)
 # df1 = df1.query("shape_id == @filter")
 
-# ------------------------------
-
-TBANE = [1,2,3,4,5]
-TRIKK = [11,12,13,17,18,19]
-REST = df4
-
-filter = DataFrame(df1)
-temp = DataFrame()
-
-filter = df1.loc[df1["shape_id"].str.contains(f"RUT:JourneyPattern:{1}-")]
-
-# print(filter)
-
-for i in TRIKK:
-	temp = df1.loc[df1["shape_id"].str.contains(f"RUT:JourneyPattern:{i}-")]
-	print(f"RUT:JourneyPattern:{i}-")
-	# print(temp)
-	filter = filter.append(temp, ignore_index=True)
-	
-# print(filter)
-
-# df1 = filter
-
 # -------------------------------------
 
-filter_df4 = df4.loc[df4["route_type"] == 704]
+filter_df4 = df4.loc[df4["route_type"] == 401]
 filter_df4 = filter_df4["route_id"].tolist()
 
 filter_df3 = df3.loc[df3["route_id"].isin(filter_df4)]
@@ -96,21 +86,21 @@ df1 = df1.loc[df1["shape_id"].isin(filter_df3)]
 fig1 = go.FigureWidget()
 
 # POINTS
-fig2 = px.scatter_mapbox(
-	df2,
-	lat="stop_lat",
-	lon="stop_lon",
-	color="vehicle_type",
-	color_continuous_scale="rainbow",
-	custom_data=["stop_name"],
-)
+# fig2 = px.scatter_mapbox(
+# 	df2,
+# 	lat="stop_lat",
+# 	lon="stop_lon",
+# 	color="vehicle_type",
+# 	color_continuous_scale="rainbow",
+# 	custom_data=["stop_name"],
+# )
 
-fig2.update_traces(
-	hovertemplate=
-	"<b>name<b>: %{customdata[0]}<br>" +
-	"<b>lat<b>: %{lat}<br>" +
-	"<b>lon<b>: %{lon}"
-)
+# fig2.update_traces(
+# 	hovertemplate=
+# 	"<b>name<b>: %{customdata[0]}<br>" +
+# 	"<b>lat<b>: %{lat}<br>" +
+# 	"<b>lon<b>: %{lon}"
+# )
 
 # LINES
 fig3 = px.line_mapbox(
@@ -118,6 +108,7 @@ fig3 = px.line_mapbox(
 	lat="shape_pt_lat",
 	lon="shape_pt_lon",
 	color="shape_id",
+	# color_discrete_sequence=["red","orange","yellow","green","blue","purple"],
 	custom_data=["shape_id"],
 )
 
@@ -155,20 +146,3 @@ if __name__ == '__main__':
     app.run_server(debug=True)
 
 # =====================================
-
-# from math import sin, acos, cos
-
-# math.acos()
-# math.sin()
-
-# RADIUS_KM = 2
-
-# result = acos(
-# 	sin(a.Latitude * 0.0175) *
-# 	sin(YOUR_LATITUDE_X * 0.0175) +
-# 	cos(a.Latitude * 0.0175)*
-# 	cos(YOUR_LATITUDE_X * 0.0175) *
-#     cos((YOUR_LONGITUDE_Y * 0.0175) -
-# 	(a.Longitude * 0.0175))
-
-# ) *6371 <= RADIUS_KM
