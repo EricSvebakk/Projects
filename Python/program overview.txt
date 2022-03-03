@@ -1,0 +1,11 @@
+
+
+PROGRAMS (.py):
+-A* pathfinder
+-Webscraper & graph-visualizer
+-game of life
+-simple calculator
+-elastic collision sim
+-numeric base converter
+-gadm36-file to map-visualizer
+-
