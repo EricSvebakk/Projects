@@ -2,29 +2,58 @@ digraph {
 	IN1010
 	IN1000
 	IN1030
+	IN1060
+	IN1050
 	IN1080
 	IN1020
 	IN1910
+	IN2000
+	IN2020
+	IN2010
+	IN2090
+	IN2030
 	IN2040
 	IN2060
 	IN2070
 	IN1105
-	IN2090
-	IN2100
+	IN2080
 	IN1150
+	IN2100
 	IN2110
 	IN1140
+	IN2120
 	IN2140
-	IN3030
-	IN2010
-	IN3110
+	IN3000
+	IN3010
+	IN3015
 	IN3190
+	IN3020
+	IN3030
+	IN3040
+	IN3050
+	IN3060
+	IN3070
+	IN3110
+	IN3120
+	IN3130
+	IN3160
+	IN3170
+	IN3220
+	IN3230
 	IN3240
+	IN3260
 	IN1010 -> IN1030 [color=green]
+	IN1010 -> IN2000 [color=red]
+	IN1010 -> IN2010 [color=red]
+	IN1010 -> IN2030 [color=red]
 	IN1010 -> IN2140 [color=green]
+	IN1010 -> IN3015 [color=green]
 	IN1010 -> IN3030 [color=red]
+	IN1010 -> IN3060 [color=red]
 	IN1010 -> IN3110 [color=green]
+	IN1010 -> IN3120 [color=red]
 	IN1010 -> IN3240 [color=green]
+	IN1010 -> IN3260 [color=red]
 	IN1000 -> IN1010 [color=red]
 	IN1000 -> IN1030 [color=red]
 	IN1000 -> IN1080 [color=green]
@@ -40,15 +69,50 @@ digraph {
 	IN1000 -> IN3110 [color=green]
 	IN1000 -> IN3190 [color=green]
 	IN1000 -> IN3240 [color=red]
+	IN1030 -> IN2000 [color=red]
 	IN1030 -> IN2090 [color=green]
 	IN1030 -> IN3240 [color=green]
+	IN1060 -> IN2000 [color=red]
+	IN1060 -> IN2020 [color=red]
+	IN1060 -> IN3220 [color=red]
+	IN1050 -> IN1060 [color=red]
+	IN1050 -> IN2020 [color=red]
 	IN1080 -> IN2060 [color=green]
+	IN1080 -> IN3160 [color=green]
+	IN1080 -> IN3170 [color=red]
 	IN1020 -> IN1080 [color=green]
 	IN1020 -> IN2060 [color=green]
+	IN1020 -> IN2120 [color=green]
 	IN1020 -> IN2140 [color=red]
+	IN1910 -> IN2010 [color=red]
+	IN1910 -> IN3015 [color=green]
 	IN1910 -> IN3110 [color=green]
-	IN1105 -> IN2070 [color=red]
-	IN1150 -> IN2100 [color=green]
-	IN1140 -> IN2110 [color=green]
+	IN2020 -> IN2000 [color=red]
+	IN2020 -> IN3010 [color=red]
+	IN2010 -> IN2000 [color=red]
+	IN2010 -> IN3000 [color=red]
+	IN2010 -> IN3020 [color=green]
 	IN2010 -> IN3030 [color=green]
+	IN2010 -> IN3040 [color=green]
+	IN2010 -> IN3050 [color=green]
+	IN2010 -> IN3060 [color=green]
+	IN2010 -> IN3120 [color=green]
+	IN2010 -> IN3130 [color=red]
+	IN2010 -> IN3230 [color=green]
+	IN2010 -> IN3260 [color=red]
+	IN2090 -> IN2000 [color=red]
+	IN2090 -> IN3020 [color=red]
+	IN2040 -> IN3120 [color=green]
+	IN2060 -> IN3160 [color=green]
+	IN1105 -> IN2070 [color=red]
+	IN1150 -> IN2080 [color=red]
+	IN1150 -> IN2100 [color=green]
+	IN1150 -> IN3020 [color=green]
+	IN1150 -> IN3060 [color=green]
+	IN1150 -> IN3070 [color=green]
+	IN1140 -> IN2110 [color=green]
+	IN2140 -> IN3000 [color=green]
+	IN2140 -> IN3230 [color=red]
+	IN2140 -> IN3260 [color=red]
+	IN3190 -> IN3015 [color=green]
 }

@@ -14,7 +14,7 @@ SHOW_NREQ = False
 REGEXPR_1 = "(?!IN1900)(IN[0-3]{1}[0-9]{3}[A-Z]?)"
 REGEXPR_2 = REGEXPR_1
 
-RELATE_TO = "IN1000"
+RELATE_TO = ""
 
 try:
 	open(FILE_NAME, 'w').close()
