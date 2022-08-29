@@ -8,7 +8,7 @@ Github-repo for projects i've tinkered with in my spare time.
 * [A* pathfinder](Python/02-graphical/pygame/astar%20_%20maze)
 * [Elastic Collisions](Python/02-graphical/pygame/elastic%20collisions)
 ### Utility programs
-* [Subject scraper and grapher (separate)](Python/05-webscraper)
+* [UiO-subject scraper and relation grapher](Python/05-webscraper)
 ### Entur programs
 (W.I.P)
 
