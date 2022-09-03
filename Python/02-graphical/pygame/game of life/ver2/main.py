@@ -1,7 +1,6 @@
 
 from gameboard import Gameboard
-from cell import Cell
-from os import system as sys, environ
+from os import system as sys
 import pygame
 
 
@@ -10,10 +9,10 @@ screen = pygame.display.set_mode((600, 600))
 pygame.display.set_caption("Game of Life")
 
 
-# Game of Life: S23/B3
-# Day & night:  S24678/B3678
-# Seed:         S/B2
-# Gnarl:        S1/B1
+# Game of Life : S23 / B3
+# Day & night  : S24678 / B3678
+# Seed         : S / B2
+# Gnarl        : S1 / B1
 gameboard = Gameboard(pygame, 100, [2,3], [3], True)
 
 
@@ -30,82 +29,88 @@ gameboard.drawBoard(screen)
 pygame.display.flip()
 
 
-# Gameloop
+# gameloop
 while running:
 
 	for event in pygame.event.get():
 		
+		# Ends gameloop
 		if event.type == pygame.QUIT:
 			running = False
 
 		elif event.type == pygame.MOUSEBUTTONDOWN:
+		
+			# left-click adds living cells
 			if event.button == 1:
 				dragging = True
 				(xPos, yPos) = pygame.mouse.get_pos()
 				gameboard.setMouseMode(1)
 				gameboard.selectWithMouse(xPos, yPos)
-				
+			
+			# right-click clears cells
 			elif event.button == 3:
 				dragging = True
 				(xPos, yPos) = pygame.mouse.get_pos()
 				gameboard.setMouseMode(3)
 				gameboard.selectWithMouse(xPos, yPos)
-			
+		
 		elif event.type == pygame.MOUSEMOTION:
 			if dragging:
 				(xPos, yPos) = pygame.mouse.get_pos()
 				gameboard.selectWithMouse(xPos, yPos)
 
 		elif event.type == pygame.MOUSEBUTTONUP:
-			if event.button == 1:
+			if event.button == 1 or event.button == 3:
 				dragging = False
 
 		elif event.type == pygame.KEYDOWN:
 			sys("cls")
 
+			# Ends gameloop
 			if event.key == pygame.K_q:
 				running = False
 
+			# clears all cells
 			elif event.key == pygame.K_c:
 				gameboard.clearBoard()
-				print("Board cleared")
 
+			# randomizes all cells
 			elif event.key == pygame.K_r:
 				gameboard.generate()
-				print("Board regenerated!")
-					
-			# elif event.key == pygame.K_1:
-			# 	gameboard.setMouseMode(1)
 			
-			# elif event.key == pygame.K_2:
-			# 	gameboard.setMouseMode(2)
-			
-			# elif event.key == pygame.K_3:
-			# 	gameboard.setMouseMode(3)
+			# increases brush size
+			elif event.key == pygame.K_RIGHT:
+				gameboard.increaseSelectSize()
+				gameboard.showBrushSize()
 
-			elif event.key == pygame.K_SPACE:
-				if gameboard.isPaused():
-					gameboard.unpause()
-					print(f"board running ({pygame.FPS})")
-				else:
-					gameboard.pause()
-					print(f"board stopped ({pygame.FPS})")
+			# decreases brush size
+			elif event.key == pygame.K_LEFT:
+				gameboard.decreaseSelectSize()
+				gameboard.showBrushSize()
 			
+			# increments timestep of gameloop
 			elif event.key == pygame.K_UP:
 				gameboard.updateFrequency(1)
-				print(f"speed increased (FPS:{gameboard.getFrequency()})")
-
+				gameboard.showFPS()
+			
+			# decrements timestep of gameloop
 			elif event.key == pygame.K_DOWN:
-				if gameboard.getFrequency() <= 1:
-					print(f"speed not decreased (FPS:{gameboard.getFrequency()})")
+				gameboard.updateFrequency(-1)
+				gameboard.showFPS()
+				
+			# pauses/unpauses gameloop
+			elif event.key == pygame.K_SPACE:
+				gameboard.showFPS()
+				if gameboard.isPaused():
+					gameboard.unpause()
 				else:
-					gameboard.updateFrequency(-1)
-					print(f"speed decreased (FPS:{gameboard.getFrequency()})")
+					gameboard.pause()
 	
 		screen.fill(backgroundColour)
 		gameboard.drawBoard(screen)
 		pygame.display.flip()
 
+	# updates board logic and content
 	if not gameboard.isPaused():
 		gameboard.update()
 		screen.fill(backgroundColour)

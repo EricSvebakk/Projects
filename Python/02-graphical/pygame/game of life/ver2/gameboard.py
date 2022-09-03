@@ -18,7 +18,7 @@ class Gameboard:
 		self._cols = size
 		self._grid = []
 		
-		self._updateFrequency = 5
+		self._updateFrequency = 10
 		self._pauseFrequency = 80
 		self._pygame.FPS = self._pauseFrequency
 		self._allowUpdate = True
@@ -26,6 +26,8 @@ class Gameboard:
 		self._wrapAround = wrapAround
 		
 		self._mouseMode = 1
+		
+		self._selectSize = 0
 		
 		self._selectedCellX = 0
 		self._selectedCellY = 0
@@ -57,24 +59,73 @@ class Gameboard:
 					cell.alive()
 
 				self._grid[y].append(cell)
+				
+		print("Board regenerated!")
+	
+	def showFPS(self):
+		print(f"current FPS: {self._updateFrequency}")
+	
+	def showBrushSize(self):
+		print(f"current size: {self._selectSize+1}")
 	
 	def pause(self):
 		self._allowUpdate = True
 		self._pygame.FPS = self._pauseFrequency
+		print(f"board stopped")
+		print(f"========================")
+		print(f"q : quit program")
+		print(f"c : clear board")
+		print(f"r : randomize board")
+		print()
+		print(f"up    : increase speed")
+		print(f"down  : decrease speed")
+		print(f"space : pause / unpause")
+		print(f"left  : increase brush")
+		print(f"right : decrease brush")
+		print(f"========================")
 		
 	def unpause(self):
-		self._pygame.FPS = self._updateFrequency
 		self._allowUpdate = False
+		self._pygame.FPS = self._updateFrequency
+		print(f"board running")
 	
 	def isPaused(self):
 		return self._allowUpdate
 		
 	def updateFrequency(self, increment):
-		self._updateFrequency += increment
+		
+		if (increment > 0):
+			if (self._updateFrequency >= 30):
+				print(f"speed not increased")
+			else:
+				self._updateFrequency += increment
+				print(f"speed increased")
+		
+		else:
+			if (self._updateFrequency <= 1):
+				print(f"speed not decreased")
+			else:
+				self._updateFrequency += increment
+				print(f"speed decreased")
+		
 		self._pygame.FPS = self._updateFrequency
-	
-	def getFrequency(self):
-		return self._updateFrequency
+
+	def increaseSelectSize(self):
+		
+		if (self._selectSize >= 5):
+			print(f"Brush size not increased")
+		else:
+			self._selectSize += 1
+			print(f"Brush size increased")
+		
+		
+	def decreaseSelectSize(self):
+
+		if (self._selectSize <= 0):
+			print(f"Brush size not decreased")
+		else:
+			self._selectSize -= 1
+			print(f"Brush size decreased")
 
 	# A method for drawing the current state of the board
 	def drawBoard(self, screen, debug=False):
@@ -125,6 +176,8 @@ class Gameboard:
 
 				self._grid[y][x].dead()
 				self._grid[y][x].unlock()
+		
+		print("Board cleared")
 
 	# A method which returns all neighbouring cells to a specified cell-position
 	def findNeighbours(self, xC:int, yC:int) -> list:
@@ -228,7 +281,7 @@ class Gameboard:
 		
 		cWidth = self._width / self._rows
 		cHeight = self._height / self._cols
-
+		
 		# keyX = 0
 		# keyX = 0
 
@@ -239,6 +292,19 @@ class Gameboard:
 				y1 = y * cHeight
 				x2 = x1 + cWidth
 				y2 = y1 + cHeight
+				
+				if (x > 1):
+					x1 -= self._selectSize * cWidth
+				
+				if (y > 1):
+					y1 -= self._selectSize * cHeight
+				
+				if (x < self._rows):
+					x2 += self._selectSize * cWidth
+
+				if (y < self._cols):
+					y2 += self._selectSize * cHeight
+				
 				obj = self._grid[y][x]
 
 				if mouseX >= x1 and mouseX < x2:
