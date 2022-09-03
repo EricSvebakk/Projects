@@ -1,0 +1,17 @@
+h20eksamen
+S = T1(id, navn), T21(oppgave,veileder, institutt), T22(id, oppgave).
+
+h20prøveeksamen
+R = S1(A, E), S21(C, F),- S22(A, B, C, D)
+
+h19eksamen
+{A}+ = {A, B, C, D, F}.
+{B}+ = {B}.
+KN = {A, E}
+
+h19prøveeksamen
+{FG}+ = ABCDEFG
+KN = FG
+
+h19prøveeksamen2
+R = S2(B, A), S11(C, D), S12(C, B)

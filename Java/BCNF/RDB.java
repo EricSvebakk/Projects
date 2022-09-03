@@ -22,6 +22,8 @@ class RDB {
 	String RDB_CAs;
 	String RDB_A;
 	
+	HashMap<String, Integer> NFs;
+	
 	private int length = 0;
 	String line = "\n================================\n";
 	
@@ -34,20 +36,26 @@ class RDB {
 			return;
 		}
 
+		this.NFs = new HashMap<>();
+		this.NFs.put("BCNF", 4);
+		this.NFs.put("3NF", 3);
+		this.NFs.put("2NF", 2);
+		this.NFs.put("1NF", 1);
+		
 		this.RDB_A = s.nextLine();
 		
 		this.RDB_FDs = new HashMap<>();
 		
 		while (s.hasNextLine()) {
-			String[] a = s.nextLine().split("->");
+			String[] FD_temp = s.nextLine().split("->");
 
-			RDB_FDs.put(a[0], a[1]);
-			if (a[0].length() > length) {
-				length = a[0].length();
+			RDB_FDs.put(FD_temp[0], FD_temp[1]);
+			if (FD_temp[0].length() > length) {
+				length = FD_temp[0].length();
 			}
 		}
 		
-		this.RDB_CAs = findCA(this.RDB_FDs);
+		this.RDB_CAs = findCA(this.RDB_FDs, this.RDB_A);
 		this.RDB_CKs = findCK(this.RDB_CAs, this.RDB_A, this.RDB_FDs);
 		
 		this.RDB_Closures = new HashMap<>();
@@ -162,24 +170,25 @@ class RDB {
 	}
 	
 	/**
-	 * Returns a string containing candidate-keys for the relation
+	 * Returns a string containing candidate-attributes for the relation
 	 * @param FDs functional-dependencies for finding CA
+	 * @param allAttributes to check for attributes not in any FD
 	 */
-	public String findCA(HashMap<String,String> FDs) {
+	public String findCA(HashMap<String,String> FDs, String allAttibutes) {
 		
 		String CA = "";
 		String left = "";
 		String right = "";
 
-		for (String a : FDs.keySet()) {
+		for (String FD : FDs.keySet()) {
 
-			for (char attribute : a.toCharArray()) {
+			for (char attribute : FD.toCharArray()) {
 				if (!left.contains(String.valueOf(attribute))) {
 					left += attribute;
 				}
 			}
 
-			for (char attribute : FDs.get(a).toCharArray()) {
+			for (char attribute : FDs.get(FD).toCharArray()) {
 				if (!right.contains(String.valueOf(attribute))) {
 					right += attribute;
 				}
@@ -193,6 +202,17 @@ class RDB {
 				Arrays.sort(temp);
 				CA = String.valueOf(temp);
 			}
+		}
+		
+		last:
+		for (char attribute : allAttibutes.toCharArray()) {
+			
+			if (left.contains(String.valueOf(attribute))) continue last;
+			if (right.contains(String.valueOf(attribute))) continue last;
+			
+			char[] temp = (CA + attribute).toCharArray();
+			Arrays.sort(temp);
+			CA = String.valueOf(temp);
 		}
 		
 		return CA;
@@ -257,9 +277,65 @@ class RDB {
 	}
 	
 	/**
+	 * Prints an explanation for the normalform of each functional-dependency
+	 * @param FDs which functional-dependencies to check
+	 * @param CKs which candidate-keys to base the normalform on
+	 */
+	public HashMap<String, String> findNFs(HashMap<String, String> FDs, HashSet<String> CKs) {
+
+		HashMap<String, String> NFs = new HashMap<>();
+
+		outer:
+		for (String a1 : FDs.keySet()) {
+			System.out.println();
+
+			String FD = a1 + " -> " + FDs.get(a1);
+
+			for (String a2 : CKs) {
+				if (a1.contains(a2)) {
+					NFs.put(a1, "BCNF");
+					System.out.println(FD + " er i BCNF");
+					continue outer;
+				}
+			}
+			System.out.println(FD + " bryter med BCNF fordi " + a1 + " er ikke en supernøkkel");
+
+			for (String a2 : CKs) {
+				if (a2.contains(FDs.get(a1))) {
+					NFs.put(a1, "3NF");
+					System.out.println(FD + " er i 3NF");
+					continue outer;
+				}
+			}
+			System.out.println(FD + " bryter med 3NF fordi " + FDs.get(a1) + " er ikke et nøkkelattributt");
+
+			boolean flag = true;
+			for (String a2 : CKs) {
+				if (a2.contains(a1)) {
+					System.out.println(FD + " bryter med 2NF fordi " + a1 + " er del av en kandidatnøkkel");
+					flag = false;
+				}
+			}
+
+			if (flag) {
+				NFs.put(a1, "2NF");
+				System.out.println(FD + " er i 2NF");
+				continue outer;
+			}
+
+			NFs.put(a1, "1NF");
+			System.out.println(FD + " er i 1NF");
+		}
+
+		System.out.println(line);
+
+		return NFs;
+	}
+	
+	/**
 	 * Returns functional-dependencies that are valid for the given closure
-	 * @param
-	 * @param
+	 * @param closure the attributes used for filtering FDs
+	 * @param FDs all FDs to
 	 */
 	private HashMap<String, String> filterFDs(String closure, HashMap<String,String> FDs) {
 		
@@ -288,62 +364,6 @@ class RDB {
 		} 
 		
 		return filter;
-	}
-	
-	/**
-	 * Prints an explanation for the normalform of each functional-dependency
-	 * @param
-	 * @param
-	 */
-	public HashMap<String,String> findNFs(HashMap<String, String> FDs, HashSet<String> CKs) {
-		
-		HashMap<String,String> NFs = new HashMap<>();
-		
-		outer:
-		for (String a1 : FDs.keySet()) {
-			System.out.println();
-			
-			String FD = a1 + " -> " + FDs.get(a1);
-			
-			for (String a2 : CKs) {
-				if (a1.contains(a2)) {
-					NFs.put(a1, "BCNF");
-					System.out.println(FD + " er i BCNF");
-					continue outer;
-				}
-			}
-			System.out.println(FD + " bryter med BCNF fordi " + a1 + " er ikke en supernøkkel");
-			
-			for (String a2 : CKs) { 
-				if (a2.contains(FDs.get(a1))) {
-					NFs.put(a1, "3NF");
-					System.out.println(FD + " er i 3NF");
-					continue outer;
-				}
-			}
-			System.out.println(FD + " bryter med 3NF fordi " + FDs.get(a1) + " er ikke et nøkkelattributt");
-			
-			boolean flag = true;
-			for (String a2 : CKs) {
-				if (a2.contains(a1)) {
-					System.out.println(FD + " bryter med 2NF fordi " + a1 + " er del av en kandidatnøkkel");
-					flag = false;
-				}
-			}
-			
-			if (flag) {
-				NFs.put(a1, "2NF");
-				System.out.println(FD + " er i 2NF");
-				continue outer;
-			}
-			
-			NFs.put(a1, "1NF");
-			System.out.println(FD + " er i 1NF");
-		}
-		
-		System.out.println(line);
-		
-		return NFs;
 	}
 	
 	/**
@@ -394,20 +414,52 @@ class RDB {
 	 */
 	public void decompose(String keyFD) {
 		
+		String validFD = keyFD;
+		if (!RDB_FDs.containsKey(validFD)) {
+			
+			System.out.println(validFD + " is not an FD!");
+			
+			int bestInt = 0;
+			String bestFD = "";
+			
+			for (String FD : RDB_NFs.keySet()) {
+				
+				String NF = RDB_NFs.get(FD);
+				int temp = NFs.get(NF);
+				
+				if (!NF.equals("BCNF") && temp >= bestInt && FD.length() > bestFD.length()) {
+					bestInt = temp;
+					bestFD = FD;
+				}
+			}
+			
+			validFD = bestFD;
+			System.out.println(validFD);
+			
+			if (!RDB_FDs.containsKey(validFD)) {
+				System.out.println("non-BCNF FD not found!");
+				return;
+			}
+			
+		}
+		else {
+			System.out.println("FD '" + keyFD + "' found!");
+		}
+		
 		HashMap<String, decompRelation> decomps = new HashMap<>();
 		
 		String R = "R";
 		decomps.put(R, new decompRelation(R, RDB_A, RDB_CKs));
 		
-		System.out.println(keyFD + " -> " + RDB_FDs.get(keyFD) + " (" + RDB_NFs.get(keyFD) + ")\n");
+		System.out.println(validFD + " -> " + RDB_FDs.get(validFD) + " (" + RDB_NFs.get(validFD) + ")\n");
 		System.out.println(decomps.get(R));
 		
-		if (!isBCNF(keyFD, RDB_CKs)) {
-			System.out.print(keyFD + " -> " + RDB_FDs.get(keyFD) + " bryter med BCNF fordi ");
-			System.out.println(keyFD + " er ikke en supernøkkel for " + R);
+		if (!isBCNF(validFD, RDB_CKs)) {
+			System.out.print(validFD + " -> " + RDB_FDs.get(validFD) + " bryter med BCNF fordi ");
+			System.out.println(validFD + " er ikke en supernøkkel for " + R);
 			
 			decomps.get(R).valid = false;
-			decomps = decompose_rec(keyFD, RDB_A, decomps, R, 0);
+			decomps = decompose_rec(validFD, RDB_A, decomps, R, 0);
 			
 			System.out.println("\n");
 			for (String dR : decomps.keySet()) {

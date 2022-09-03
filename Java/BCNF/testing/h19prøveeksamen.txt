@@ -1,0 +1,5 @@
+ABCDEFG
+C->AE
+AB->D
+B->C
+G->B
