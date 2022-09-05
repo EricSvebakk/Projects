@@ -18,6 +18,7 @@ Github-repo for projects i've tinkered with in my spare time.
 
 ## Java
 * [Relational database calculator](Java/BCNF)
+* [Labyrinth solver](Java/Labyrinth%20solver)
 
 ## Javascript (old)
 * [Labyrinth generator](Javascript/labyrint)
