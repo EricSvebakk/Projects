@@ -1,7 +1,9 @@
-Bedpres/
-Portfolio/
 Github Pages/
 Java/**/*.class
+Portfolio/
+
+__pycache__/
+
 **/data
 **/node_modules
 **/geopandas
@@ -9,4 +11,4 @@ Java/**/*.class
 **/package-lock.json
 **/__pycache__
 **/*.tsv.gz
-**/*.tsv
+# **/*.tsv
