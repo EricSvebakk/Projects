@@ -8,11 +8,6 @@ public class RDBTesting {
 		
 		System.out.println(r);
 		
-		for (char s : r.RDB_A.toCharArray()) {
-			System.out.println(s + " " + r.getClosure(String.valueOf(s), r.RDB_FDs));
-		}
-		System.out.println("\n================================");
-		
 		// for (String ck : r.RDB_CKs) {
 		// 	System.out.println(ck + " " + r.getClosure(ck, r.RDB_FDs));
 		// }

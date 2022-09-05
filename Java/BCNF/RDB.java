@@ -455,8 +455,7 @@ class RDB {
 		System.out.println(decomps.get(R));
 		
 		if (!isBCNF(validFD, RDB_CKs)) {
-			System.out.print(validFD + " -> " + RDB_FDs.get(validFD) + " bryter med BCNF fordi ");
-			System.out.println(validFD + " er ikke en supernøkkel for " + R);
+			System.out.println(validFD + " -> " + RDB_FDs.get(validFD) + " bryter med BCNF fordi " + validFD + " er ikke en supernøkkel for " + R);
 			
 			decomps.get(R).valid = false;
 			decomps = decompose_rec(validFD, RDB_A, decomps, R, 0);
@@ -473,9 +472,9 @@ class RDB {
 	}
 	
 	/**
-	 * Decomposes a relation to a set of BCNF relations.
+	 * Breaks down R(X) to R1(Y+) and R2(X-Y+) using FD F->Y
 	 * @param keyFD left-side of a functional-dependency
-	 * @param closure 
+	 * @param closure all relevant attributes for keyFD
 	 * @param data contains all recursively-created relations
 	 * @param R relation-name for next recursion-step
 	 * @param index recursive index for indenting console
@@ -486,13 +485,13 @@ class RDB {
 		String R1 = R + "1";
 		String R2 = R + "2";
 		
-		
+		// Breaks down R(X) to R1(Y+)
 		String R1Closure = getClosure(keyFD, RDB_FDs);
 		HashMap<String, String> R1FDs = filterFDs(R1Closure, RDB_FDs);
 		HashSet<String> R1CKs = findCK("", R1Closure, R1FDs);
 		data.put(R1, new decompRelation(R1, R1Closure, R1CKs));
 		
-		
+		// Breaks down R(X) to R2(X-Y+)
 		String R2Closure = closure;
 		for (char i : R1Closure.toCharArray()) {
 			if (!keyFD.contains(String.valueOf(i))) {
@@ -503,49 +502,48 @@ class RDB {
 		HashSet<String> R2CKs = findCK("", R2Closure, R2FDs);
 		data.put(R2, new decompRelation(R2, R2Closure, R2CKs));
 		
-		
+		// Closure of current FD
 		System.out.println("\n" + pad + keyFD + "+ = {" + R1Closure + "}");
+		
+		// R1 and relevant FD's for R1
 		System.out.println("\n" + pad + data.get(R1));
 		HashMap<String, String> filterR1 = filterFDs(data.get(R1).closure, RDB_FDs);
 		
+		// Lists all valid BCNF FD's for R1
 		for (String i : filterR1.keySet()) {
 			if (isBCNF(i, data.get(R1).CK)) {
-				// System.out.println(pad + i + " -> " + filterR1.get(i) + " gjelder og er gyldig for " + R1);
 				System.out.println(pad + "Har " + i + " -> " + filterR1.get(i) + " som følger BCNF");
 			}
 		}
 		
+		// Recursively calls decompose_rec() on a valid non-BCNF FD for R1
 		for (String i : filterR1.keySet()) {
 			if (!isBCNF(i, data.get(R1).CK)) {
-				// System.out.print(pad + i + " -> " + RDB_FDs.get(i) + " gjelder og bryter med BCNF fordi ");
-				System.out.print(pad + "Har " + i + " -> " + filterR1.get(i) + " som bryter BCNF fordi ");
-				System.out.println(i + " er ikke en supernøkkel for " + R1);
+				System.out.print(pad + "Har " + i + " -> " + filterR1.get(i) + " som bryter BCNF fordi " + i + " er ikke en supernøkkel for " + R1);
 				
 				data.get(R1).valid = false;
 				data = decompose_rec(i, data.get(R1).closure, data, R1, index);
-				// break;
 			}
 		}
 		
+		// R2 and relevant FD's for R2
 		System.out.println("\n" + pad + data.get(R2));
 		HashMap<String, String> filterR2 = filterFDs(data.get(R2).closure, RDB_FDs);
 		
+		// Lists all valid BCNF FD's for R2
 		for (String i : filterR2.keySet()) {
 			if (isBCNF(i, data.get(R2).CK)) {
-				// System.out.println(pad + i + " -> " + filterR2.get(i) + " gjelder og er gyldig for " + R2);
 				System.out.println(pad + "Har " + i + " -> " + filterR2.get(i) + " som følger BCNF");
 			}
 		}
 		
+		// Recursively calls decompose_rec() on a valid non-BCNF FD for R2
 		for (String i : filterR2.keySet()) {
 			if (!isBCNF(i, data.get(R2).CK)) {
-				// System.out.print(pad + i + " -> " + RDB_FDs.get(i) + " gjelder og bryter med BCNF fordi ");
-				System.out.print(pad + "Har " + i + " -> " + filterR2.get(i) + " som bryter BCNF fordi ");
-				System.out.println(i + " er ikke en supernøkkel for " + R2);
+				System.out.print(pad + "Har " + i + " -> " + filterR2.get(i) + " som bryter BCNF fordi " + i + " er ikke en supernøkkel for " + R2);
 				
 				data.get(R2).valid = false;
 				data = decompose_rec(i, data.get(R2).closure, data, R2, index);
-				// break;
 			}
 		}
 		
@@ -561,26 +559,32 @@ class RDB {
 		
 		String s = "";
 		
-		s += "\nR(" + RDB_A + ")\n\n";
-		s += "FDs\n";
+		s += "R(" + RDB_A + ")\n\n";
+		s += "Functional dependencies\n";
 		
 		for (String c : RDB_FDs.keySet()) {
 			
 			String i = RDB_NFs.get(c);
-			
 			String pad1 = String.format("%" + (length + 1 - c.length()) + "s", "");
 			String pad2 = String.format("%" + (4 + 1 - i.length()) + "s", "");
-
+			
 			s += c + pad1 + "-> " + RDB_FDs.get(c) + pad2 + "(" + i + ")\n";
 		}
-		s += "\nCA\n";
-		s += "[" + this.RDB_CAs + "]\n\n";
-		s += "CK\n";
-		s += this.RDB_CKs + "\n\n";
 		
+		s += "\nCandidate attributes\n[" + this.RDB_CAs + "]\n";
+		s += "\nCandidate keys\n" + this.RDB_CKs + "\n";
+		
+		s += "\nFD closures\n";
 		for (String FD : RDB_Closures.keySet()) {
+			
 			String pad = String.format("%" + (length + 1 - FD.length()) + "s", "");
+			
 			s += FD + "+" + pad + " = " + this.RDB_Closures.get(FD) + "\n";
+		}
+		
+		s += "\nAttribute closures\n";
+		for (char c : RDB_A.toCharArray()) {
+			s += c + "+ = " + getClosure(String.valueOf(c), RDB_FDs) + "\n";
 		}
 		
 		s += line;
