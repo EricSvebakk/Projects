@@ -2,8 +2,6 @@ Github Pages/
 Java/**/*.class
 Portfolio/
 
-__pycache__/
-
 **/data
 **/node_modules
 **/geopandas
