@@ -1,19 +1,19 @@
 
 class betterUI {
-    constructor(output=false, width="190", height = "194") {
+    constructor(contentID="container", output=false, width="190", height = "194") {
 
         this.bredde = width;
 
         // Div containing input and output
         this.container = document.createElement("div");
-        this.container.id = "container";
+        this.container.id = contentID;
         this.container.style.float = "left";
         this.container.style.width = parseInt(width) + 30 + "px";
         document.body.appendChild(this.container);
 
         // form containing input
         this.form = document.createElement("form");
-        this.form.id = "form_input";
+        this.form.id = contentID + "_form_input";
         this.form.style.margin = "10px";
         this.form.style.padding = "5px";
         this.form.style.paddingBottom = "7px";
@@ -22,18 +22,18 @@ class betterUI {
         this.form.style.width = width + "px";
         $(this.container.id).appendChild(this.form);
 
-        this.button = document.createElement("input");
-        this.button.id = "form_button";
-        this.button.type = "button";
-        this.button.value = "Start";
-        this.button.style.width = "99%";
-        this.button.style.height = "20px";
-        $(this.form.id).appendChild(this.button);
+        // this.button = document.createElement("input");
+        // this.button.id = contentID + "_form_button";
+        // this.button.type = "button";
+        // this.button.value = "Start";
+        // this.button.style.width = "99%";
+        // this.button.style.height = "20px";
+        // $(this.form.id).appendChild(this.button);
 
         if (output) {
             // div containing output
             this.outputDiv = document.createElement("div");
-            this.outputDiv.id = "form_output";
+            this.outputDiv.id = contentID + "_form_output";
             this.outputDiv.style.width = width + "px";
             this.outputDiv.style.height = height + "px";
             this.outputDiv.style.backgroundColor = "white";

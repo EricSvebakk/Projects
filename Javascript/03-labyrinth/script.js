@@ -9,12 +9,18 @@ var tegn, bui, canvas, cols, rows, dist,
 window.onload = function winInit() {
 
     tegn = new canvasGRID("canvas", 600, 600, false);
-    bui = new betterUI();
-    
     tegn.blankCanvas("black");
+    
+    bui = new betterUI("container");
+    
     bui.text(["farge", "størrelse"]);
     bui.list(["type"],["ordinær","frekvens","avstand"])
-    $setClick("form_button",setup);
+    bui.bttn(["Go"], "container_form_input")
+    
+    $setVal("farge", "20,40,80");
+    $setVal("størrelse", "40");
+    
+    $setClick("Go",setup);
 }
 
 /*==========================================================================/

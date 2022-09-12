@@ -6,10 +6,12 @@ var tegn, bui;
 /==========================================================================*/
 window.onload = () => {
     tegn = new canvasGRID("canvas", 600, 600, true, 0, 0, 20, 20);
-    bui = new betterUI(false,200);
+    bui = new betterUI("container", false, 200);
 
     bui.text(["terninger","kast"]);
-    $setClick("form_button",terningkast);
+    bui.bttn(["Go"], "container_form_input")
+    
+    $setClick("Go",terningkast);
 }
 
 /*==========================================================================/
