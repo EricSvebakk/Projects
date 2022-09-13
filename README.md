@@ -20,7 +20,8 @@ Github-repo for projects i've tinkered with in my spare time.
 * [Relational database calculator](Java/BCNF)
 * [Labyrinth solver](Java/Labyrinth%20solver)
 
-## Javascript (old)
-* [Labyrinth generator](Javascript/labyrint)
-* [Circle packer](Javascript/sirkelpakking)
-* [Dice-throw graph](Javascript/terningkast)
+## Javascript
+* [Labyrinth generator (old)](Javascript/03-labyrinth)
+* [Circle packer (old)](Javascript/02-sirkelpakking)
+* [Dice-throw graph (old)](Javascript/01-terningkast)
+* [Chemist-Wares scraper](Javascript/NodeJS/apotek-system)
