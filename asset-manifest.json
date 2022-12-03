@@ -1,16 +1,16 @@
 {
-  "main.css": "/Projects/static/css/main.2e8ce219.chunk.css",
-  "main.js": "/Projects/static/js/main.5047c3fc.chunk.js",
-  "main.js.map": "/Projects/static/js/main.5047c3fc.chunk.js.map",
+  "main.css": "/Projects/static/css/main.616476a3.chunk.css",
+  "main.js": "/Projects/static/js/main.1aabeaf6.chunk.js",
+  "main.js.map": "/Projects/static/js/main.1aabeaf6.chunk.js.map",
   "static/css/1.5af3c6e6.chunk.css": "/Projects/static/css/1.5af3c6e6.chunk.css",
-  "static/js/1.9d80cd5a.chunk.js": "/Projects/static/js/1.9d80cd5a.chunk.js",
-  "static/js/1.9d80cd5a.chunk.js.map": "/Projects/static/js/1.9d80cd5a.chunk.js.map",
+  "static/js/1.90f6e136.chunk.js": "/Projects/static/js/1.90f6e136.chunk.js",
+  "static/js/1.90f6e136.chunk.js.map": "/Projects/static/js/1.90f6e136.chunk.js.map",
   "runtime~main.js": "/Projects/static/js/runtime~main.47d60afd.js",
   "runtime~main.js.map": "/Projects/static/js/runtime~main.47d60afd.js.map",
   "static/media/BW_UiO_logo.png": "/Projects/static/media/BW_UiO_logo.e422401a.png",
-  "static/css/main.2e8ce219.chunk.css.map": "/Projects/static/css/main.2e8ce219.chunk.css.map",
   "static/css/1.5af3c6e6.chunk.css.map": "/Projects/static/css/1.5af3c6e6.chunk.css.map",
+  "static/css/main.616476a3.chunk.css.map": "/Projects/static/css/main.616476a3.chunk.css.map",
   "index.html": "/Projects/index.html",
-  "precache-manifest.78f2c0fce8d0fcf75cd3d3b4a8f40ee0.js": "/Projects/precache-manifest.78f2c0fce8d0fcf75cd3d3b4a8f40ee0.js",
+  "precache-manifest.d4a03ef9046009fa1e7b0d1a57fb3463.js": "/Projects/precache-manifest.d4a03ef9046009fa1e7b0d1a57fb3463.js",
   "service-worker.js": "/Projects/service-worker.js"
 }
