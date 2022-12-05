@@ -1,19 +1,19 @@
 self.__precacheManifest = [
   {
-    "revision": "f4e4fb216d2c4571bbac",
-    "url": "/Projects/static/css/main.570e095d.chunk.css"
+    "revision": "2f7a1ebbbae9942cce5e",
+    "url": "/Projects/static/css/main.72ca4df2.chunk.css"
   },
   {
-    "revision": "f4e4fb216d2c4571bbac",
-    "url": "/Projects/static/js/main.f4e4fb21.chunk.js"
+    "revision": "2f7a1ebbbae9942cce5e",
+    "url": "/Projects/static/js/main.2f7a1ebb.chunk.js"
   },
   {
-    "revision": "f5ff18acb3ae154bde17",
+    "revision": "ed6ee7f163d7f61d3bfb",
     "url": "/Projects/static/css/1.d4596587.chunk.css"
   },
   {
-    "revision": "f5ff18acb3ae154bde17",
-    "url": "/Projects/static/js/1.f5ff18ac.chunk.js"
+    "revision": "ed6ee7f163d7f61d3bfb",
+    "url": "/Projects/static/js/1.ed6ee7f1.chunk.js"
   },
   {
     "revision": "47d60afdb927a5329998",
@@ -24,7 +24,7 @@ self.__precacheManifest = [
     "url": "/Projects/static/media/BW_UiO_logo.e422401a.png"
   },
   {
-    "revision": "09c9a22aeee2cad32ffe9d497256cfc4",
+    "revision": "0cf07b96553dce9566a832d1f7785cbf",
     "url": "/Projects/index.html"
   }
 ];
