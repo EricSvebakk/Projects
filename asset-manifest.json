@@ -1,7 +1,7 @@
 {
-  "main.css": "/Projects/static/css/main.72ca4df2.chunk.css",
-  "main.js": "/Projects/static/js/main.2f7a1ebb.chunk.js",
-  "main.js.map": "/Projects/static/js/main.2f7a1ebb.chunk.js.map",
+  "main.css": "/Projects/static/css/main.d3ac28d3.chunk.css",
+  "main.js": "/Projects/static/js/main.1b3cf181.chunk.js",
+  "main.js.map": "/Projects/static/js/main.1b3cf181.chunk.js.map",
   "static/css/1.d4596587.chunk.css": "/Projects/static/css/1.d4596587.chunk.css",
   "static/js/1.ed6ee7f1.chunk.js": "/Projects/static/js/1.ed6ee7f1.chunk.js",
   "static/js/1.ed6ee7f1.chunk.js.map": "/Projects/static/js/1.ed6ee7f1.chunk.js.map",
@@ -9,8 +9,8 @@
   "runtime~main.js.map": "/Projects/static/js/runtime~main.47d60afd.js.map",
   "static/media/BW_UiO_logo.png": "/Projects/static/media/BW_UiO_logo.e422401a.png",
   "static/css/1.d4596587.chunk.css.map": "/Projects/static/css/1.d4596587.chunk.css.map",
-  "static/css/main.72ca4df2.chunk.css.map": "/Projects/static/css/main.72ca4df2.chunk.css.map",
+  "static/css/main.d3ac28d3.chunk.css.map": "/Projects/static/css/main.d3ac28d3.chunk.css.map",
   "index.html": "/Projects/index.html",
-  "precache-manifest.21ad9bc9b19c1445a53c41d4bc16493d.js": "/Projects/precache-manifest.21ad9bc9b19c1445a53c41d4bc16493d.js",
+  "precache-manifest.8b95273e51331ffd75daa3af262e66d1.js": "/Projects/precache-manifest.8b95273e51331ffd75daa3af262e66d1.js",
   "service-worker.js": "/Projects/service-worker.js"
 }
