@@ -1,11 +1,11 @@
 self.__precacheManifest = [
   {
-    "revision": "a79fd93d0aefb6a8124f",
+    "revision": "65a70505a2012bf01d90",
     "url": "/Projects/static/css/main.8d7d85f7.chunk.css"
   },
   {
-    "revision": "a79fd93d0aefb6a8124f",
-    "url": "/Projects/static/js/main.a79fd93d.chunk.js"
+    "revision": "65a70505a2012bf01d90",
+    "url": "/Projects/static/js/main.65a70505.chunk.js"
   },
   {
     "revision": "4767bf50adcd5225cf2c",
@@ -24,7 +24,7 @@ self.__precacheManifest = [
     "url": "/Projects/static/media/BW_UiO_logo.e422401a.png"
   },
   {
-    "revision": "2f3a5334bbf1d4c81f44cefef58c6b6b",
+    "revision": "cea1cee9fac68998dcb410f245cc40c5",
     "url": "/Projects/index.html"
   }
 ];
