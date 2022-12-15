@@ -16,5 +16,6 @@ Github-repo for projects i've tinkered with in my spare time.
 * [Elastic Collisions](Python/02-graphical/pygame/elastic%20collisions)
 
 ## Java
+* [SATSolver](Java/SATSolver)
 * [Relational database calculator](Java/BCNF)
 * [Labyrinth solver](Java/Labyrinth%20solver)
