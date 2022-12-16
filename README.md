@@ -6,7 +6,7 @@ Github-repo for projects i've tinkered with in my spare time.
 ## Javascript / React
 * [IFI emner oversikt](Javascript/React/Subject-page)
 
-## Android Studio
+## Kotlin / Android Studio
 * [Project EPTA](https://github.com/EricSvebakk/Project-EPTA)
 * [PartyGame](https://github.com/EricSvebakk/PartyGame)
 
