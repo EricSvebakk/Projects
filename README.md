@@ -13,6 +13,7 @@ Github-repo for projects i've tinkered with in my spare time.
 ## Python
 * [Game of Life](Python/02-graphical/pygame/game%20of%20life)
 * [A* pathfinder](Python/02-graphical/pygame/astar%20_%20maze)
+* [UiO-scraper](Python/05-webscraper)
 * [Elastic Collisions (add README)](Python/02-graphical/pygame/elastic%20collisions)
 
 ## Java
