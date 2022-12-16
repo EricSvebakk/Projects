@@ -17,5 +17,4 @@ Github-repo for projects i've tinkered with in my spare time.
 
 ## Java
 * [SATSolver](Java/SATSolver)
-* [Relational database calculator (add README)](Java/BCNF)
 * [Labyrinth solver (add README)](Java/Labyrinth%20solver)
