@@ -11,7 +11,7 @@ Github-repo for projects i've tinkered with in my spare time.
 * [PartyGame](https://github.com/EricSvebakk/PartyGame)
 
 ## Python
-* [Game of Life (add README)](Python/02-graphical/pygame/game%20of%20life/ver2)
+* [Game of Life (add README)](Python/02-graphical/pygame/game%20of%20life)
 * [A* pathfinder (add README)](Python/02-graphical/pygame/astar%20_%20maze)
 * [Elastic Collisions (add README)](Python/02-graphical/pygame/elastic%20collisions)
 
