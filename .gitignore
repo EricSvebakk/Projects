@@ -2,6 +2,7 @@ Github Pages/
 Java/**/*.class
 Javascript/React/Portfolio
 
+**/*.zip
 **/data
 **/node_modules
 **/geopandas
