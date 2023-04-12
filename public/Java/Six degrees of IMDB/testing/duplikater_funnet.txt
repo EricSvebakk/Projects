@@ -1,0 +1,22 @@
+=======================
+Fritz Feld 1
+Larry Fine 7
+Diana Darrin 1
+Iris Adrian 1
+Frank Sully 2
+Bud Abbott 1
+Moe Howard 7
+Lou Costello 1
+Dick Wesson 1
+Gene Roth 1
+Greta Thyssen 1
+Jerry Lewis 1
+Joe Palma 2
+Roscoe Ates 1
+Phil Arnold 1
+Emil Sitka 1
+Harriette Tarler 1
+Kathleen Freeman 1
+=======================
+32
+32 duplikater totalt

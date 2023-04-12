@@ -1,7 +1,9 @@
-Github Pages/
-Java/**/*.class
-Javascript/React/Portfolio
+private/
+# Github Pages/
+# Java/**/*.class
+# Javascript/React/Portfolio
 
+*.class
 **/*.zip
 **/data
 **/node_modules
