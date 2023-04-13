@@ -1,7 +1,5 @@
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.PriorityQueue;
 import java.util.Scanner;
@@ -9,163 +7,13 @@ import java.util.Stack;
 
 class Graph {
 
-	//
-	class Node implements Comparable<Node> {
-		HashMap<Node, Edge> nodes = null;
-		HashSet<Edge> edges = null;
-		String nmid;
-		String name;
-		double dValue = 0;
-
-		public Node(String nmid, String name) {
-			this.nmid = nmid;
-			this.name = name;
-			this.nodes = new HashMap<>();
-			this.edges = new HashSet<>();
-		}
-
-		public void addRelation(Node other, Edge edge) {
-			if (nodes.containsKey(other)) {
-				if (edge.rating > nodes.get(other).rating) {
-					nodes.put(other, edge);
-					edges.add(edge);
-				}
-			} else {
-				nodes.put(other, edge);
-				edges.add(edge);
-			}
-		}
-
-		@Override
-		public String toString() {
-			return "(" + nmid + "|" + name + "|" + nodes.size() + ")";
-		}
-
-		@Override
-		public int compareTo(Node n) {
-			return Double.compare(this.dValue, n.dValue);
-		}
-	}
-
-	//
-	class Edge {
-		HashSet<Node> nodes;
-		String ttid;
-		String title;
-		double rating;
-
-		public Edge(String ttid, String title, double rating) {
-			this.ttid = ttid;
-			this.title = title;
-			this.rating = rating;
-			this.nodes = new HashSet<>();
-		}
-
-		public Edge(Edge edge) {
-			this.ttid = edge.ttid;
-			this.title = edge.title;
-			this.rating = edge.rating;
-			this.nodes = new HashSet<>(edge.nodes);
-		}
-
-		@Override
-		public String toString() {
-			return "[" + ttid + "|" + title + "|" + rating + "]";
-		}
-	}
-
-	//
-	class Data {
-		HashMap<Integer, Integer> components = new HashMap<>();
-		HashMap<Node, Boolean> visited = new HashMap<>();
-		HashMap<Node, Node> parents = new HashMap<>();
-
-		HashMap<String, Node> nodes = new HashMap<>();
-		HashMap<String, Edge> edges = new HashMap<>();
-
-		//
-		public void addNode(String id, Node node) {
-			nodes.put(id, node);
-			visited.put(node, false);
-		}
-
-		public void addEdge(String id, Edge edge) {
-			edges.put(id, edge);
-		}
-
-		public void addNodeToEdge(String nmid, String ttid) {
-			if (edges.containsKey(ttid)) {
-				Edge edge = edges.get(ttid);
-				Node node = nodes.get(nmid);
-
-				if (!edge.nodes.contains(node)) {
-					edge.nodes.add(node);
-				}
-			}
-		}
-
-		public void addParent(Node child, Node parent) {
-			parents.put(child, parent);
-		}
-
-		//
-		public void addComponent(int key) {
-			if (components.containsKey(key)) {
-				components.replace(key, components.get(key) + 1);
-			} else {
-				components.put(key, 1);
-			}
-		}
-
-		//
-		public Collection<Node> getNodes() {
-			return nodes.values();
-		}
-
-		public Collection<Edge> getEdges() {
-			return edges.values();
-		}
-
-		public Node getParent(Node child) {
-			return parents.get(child);
-		}
-
-		//
-		public void printComponents() {
-			for (int n : data.components.keySet()) {
-				System.out.println("Size " + n + ": " + components.get(n));
-			}
-			System.out.println();
-		}
-
-		//
-		public void startVisit() {
-			for (Node n : nodes.values()) {
-				visited.replace(n, false);
-				n.dValue = 999999999;
-			}
-			parents.clear();
-			components.clear();
-		}
-
-		public void visit(Node node) {
-			visited.replace(node, true);
-		}
-
-		public boolean hasVisited(Node node) {
-			return visited.get(node);
-		}
-
-		public boolean hasComponent(int key) {
-			return components.containsKey(key);
-		}
-
-	}
-
-	Data data;
-
-	public Graph(File fileNodes, File fileEdges) {
-
+	Data data = null;
+	boolean initialized = false;
+	
+	public void readData(File fileNodes, File fileEdges) {
+		
+		data = new Data(this);
+		
 		Scanner scannerNode = null;
 		Scanner scannerEdge = null;
 
@@ -176,14 +24,12 @@ class Graph {
 
 		catch (FileNotFoundException e) {
 			if (scannerNode == null) {
-				System.out.println("Fil '" + fileEdges + "' ikke funnet!");
+				System.out.println("File '" + fileNodes + "' not found!");
 			} else {
-				System.out.println("Fil '" + fileNodes + "' ikke funnet!");
+				System.out.println("File '" + fileEdges + "' not found!");
 			}
 			return;
 		}
-
-		this.data = new Data();
 
 		while (scannerEdge.hasNextLine()) {
 
@@ -199,13 +45,20 @@ class Graph {
 
 			String[] bits = scannerNode.nextLine().split("\t");
 			String nmid = bits[0].strip();
-			String name = bits[1].strip();
+			String name = bits[1].strip().toLowerCase();
 
-			data.addNode(nmid, new Node(nmid, name));
+			Node temp = new Node(nmid, name);
 
 			for (int i = 2; i < bits.length; i++) {
-				data.addNodeToEdge(nmid, bits[i]);
+
+				if (data.edges.containsKey(bits[i])) {
+					Edge tempEdge = data.edges.get(bits[i]);
+
+					tempEdge.nodes.add(temp);
+				}
 			}
+
+			data.addNode(nmid, temp);
 		}
 
 		scannerNode.close();
@@ -213,31 +66,52 @@ class Graph {
 	}
 
 	public void createGraph() {
-
+		
+		if (data == null) {
+			System.out.println("no data found!");
+			return;
+		}
+		
 		int index = 0;
-
-		for (Edge edge : data.getEdges()) {
-			Edge edgeTemp = new Edge(edge);
-
-			for (Node node1 : edge.nodes) {
-				edgeTemp.nodes.remove(node1);
-
-				for (Node node2 : edgeTemp.nodes) {
-
-					if (!node1.equals(node2)) {
-						node1.addRelation(node2, edge);
-						node2.addRelation(node1, edge);
-						index += 1;
-					} else {
-						System.out.println(node1 + " " + node2);
-						return;
-					}
+		for (Edge e : data.edges.values()) {
+			
+			HashSet<Node> temp = new HashSet<>(e.nodes);
+			
+			while (temp.size() > 0) {
+				
+				Node n1 = temp.iterator().next();
+				temp.remove(n1);
+				
+				for (Node n2 : temp) {
+					n1.addRelation(n2, e);
+					n2.addRelation(n1, e);
+					index++;
 				}
 			}
 		}
 
 		System.out.println("Nodes: " + data.nodes.size());
-		System.out.println("Edges: " + index + "\n");
+		System.out.println("Edges: " + index);
+		
+		initialized = true;
+	}
+	
+	public boolean isReady() {
+		return initialized;
+	}
+	
+	public String getActor(String name) {
+
+		String nname = name.strip().toLowerCase();
+		
+		for (Node n : data.nodes.values()) {
+			
+			if (nname.equals(n.name)) {
+				return n.nmid;
+			}
+		}
+
+		return null;
 	}
 
 	public void shortestPath(String startID, String endID) {
@@ -275,7 +149,7 @@ class Graph {
 
 		Stack<Node> L1 = new Stack<>();
 
-		out: while (L0.size() > 0) {
+		while (L0.size() > 0) {
 			Node parent = L0.pop();
 
 			for (Node child : parent.nodes.keySet()) {
