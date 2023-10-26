@@ -4,7 +4,7 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
-
+import java.util.Set;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Arrays;
@@ -49,9 +49,17 @@ class RDB {
 		while (s.hasNextLine()) {
 			String[] FD_temp = s.nextLine().split("->");
 
-			RDB_FDs.put(FD_temp[0], FD_temp[1]);
-			if (FD_temp[0].length() > length) {
-				length = FD_temp[0].length();
+			char[] temp = FD_temp[0].toCharArray();
+			Arrays.sort(temp);
+			String determinant = String.valueOf(temp);
+			
+			temp = FD_temp[1].toCharArray();
+			Arrays.sort(temp);
+			String dependent = String.valueOf(temp);
+			
+			RDB_FDs.put(determinant, dependent);
+			if (determinant.length() > length) {
+				length = determinant.length();
 			}
 		}
 		
@@ -70,43 +78,49 @@ class RDB {
 	}
 	
 	/**
-	 * Finds all elements related to "keys" using recursion
-	 * @param reqA : all attributes required to be in a combination
-	 * @param avlA : all attributes available to be used to create a combination
-	 * @param cLength : length of a single combination
+	 * Finds all combinations of n elements (where n goes from 0 to k)
+	 * @param requiredAttributes : attributes required to be in a combination
+	 * @param availableAttributes : attributes available for creating a combination
+	 * @param k : maximum length of a single combination
 	 */
-	private HashSet<String> findCombos(String reqA, String avlA, int cLength) {
-		return combosRecursion(reqA, avlA, cLength, new HashSet<>());
+	private HashSet<String> findUpToKCombinations(String requiredAttributes, String availableAttributes, int k) {
+		
+		if (requiredAttributes.length() > k) {
+			return null;
+		}
+		
+		return combosRecursion(requiredAttributes, availableAttributes, k, new HashSet<>());
 	}
 	
 	/**
-	 * Internal method used by getClousure() for finding closure. Uses recursion.
-	 * @param reqA : all attributes required to be in a combination
-	 * @param avlA : all attributes available to be used to create a combination
+	 * Internal method used by findUpToKCombinations() for finding [up-to-k]-combinations. Uses recursion.
+	 * @param reqAttrs : required attributes to be in a combination
+	 * @param avlAttrs : available attributes for creating a combination
 	 * @param cLength : Length of a single combination
-	 * @param combos : contains all combinations (return-value)
+	 * @param result : recursive return-value containing all combinations
 	 */
-	private HashSet<String> combosRecursion(String reqA, String avlA, int cLength, HashSet<String> combos) {
-
-		combos.add(reqA);
-
-		if (reqA.length() < cLength) {
+	private HashSet<String> combosRecursion(String reqAttrs, String avlAttrs, int cLength, HashSet<String> result) {
+		
+		char[] temp = String.join("", reqAttrs).toCharArray();
+		Arrays.sort(temp);	
+		String reqAttrsSorted = String.valueOf(temp);
+		
+		result.add(reqAttrsSorted);
+		
+		// Iterate over attributes and create [up-to-k]-combinations via recursive branches
+		for (char attr : avlAttrs.toCharArray()) {
 			
-			for (char a : avlA.toCharArray()) {
-				
-				if (!reqA.contains(String.valueOf(a))) {					
-					
-					char[] letters_temp = (reqA + a).toCharArray();
-					
-					Arrays.sort(letters_temp);
-					combos.add(String.valueOf(letters_temp));
-					
-					combos = combosRecursion(String.valueOf(letters_temp), avlA, cLength, combos);
-				}
+			String newReqAttrs = reqAttrsSorted+attr;
+			String newAvlAttrs = avlAttrs.replace(String.valueOf(attr), "");
+			
+			// Only recur if newReqA is shorter than cLength
+			// This limits the results to only containing [up-to-k]-combinations
+			if (newReqAttrs.length() <= cLength) {
+				result = combosRecursion(newReqAttrs, newAvlAttrs, cLength, result);
 			}
 		}
-
-		return combos;
+		
+		return result;
 	}
 	
 	/**
@@ -122,51 +136,38 @@ class RDB {
 	/**
 	 * Internal method used by getClousure() for finding closure. Uses recursion.
 	 * @param A contains all attributes to include in closure
-	 * @param size of closure, used for recursion-condition
 	 * @param FDs functional depedencies to use for finding closure
+	 * @param size of closure, used for recursion-condition
 	 * @return A closure of all attributes related to attributes
 	 */
 	private String closureRecursion(String A, HashMap<String, String> FDs, int size) {
 		
-		String copyA = "" + A;
+		// result
+		HashSet<String> closure = new HashSet<>(Arrays.asList(A.split("")));
 		
-		for (char a : A.toCharArray()) {
-			String attribute = String.valueOf(a);	
-			
-			if (FDs.containsKey(attribute) && !copyA.contains(FDs.get(attribute))) {
+		// combinations made from the closure-attributes 
+		HashSet<String> determinantCombos = findUpToKCombinations("", String.join("", closure), length);
 		
-				for (char i : FDs.get(attribute).toCharArray()) {
-					
-					if (!copyA.contains(String.valueOf(i))) {
-						copyA += String.valueOf(i);
-					}
+		// Iterate possible combinations
+		for (String dc : determinantCombos) {
+			
+			// check if dc is a valid determinant 
+			if (FDs.containsKey(dc)) {
+				String dependent = FDs.get(dc);
+				
+				for (char attribute : dependent.toCharArray()) {
+					closure.add(String.valueOf(attribute));
 				}
-			}
-			
-			HashSet<String> combos = findCombos("", copyA, length);
-			
-			for (String c : combos) {
-				if (FDs.containsKey(c)) {
-					
-					for (char j : FDs.get(c).toCharArray()) {
-						if (!copyA.contains(String.valueOf(j))) {
-							
-							copyA += String.valueOf(j);
-						}
-					}
+				
+				// recur if new attributes were added from dc
+				if (closure.size() != size) {
+					// System.out.println("NEW  : " + closure);
+					return closureRecursion(String.join("", closure), FDs, closure.size());
 				}
-			}
-			
-			char[] temp = copyA.toCharArray();
-			Arrays.sort(temp);
-			copyA = String.valueOf(temp);
-			
-			if (copyA.length() != size) {
-				copyA = closureRecursion(copyA, FDs, copyA.length());
 			}
 		}
-
-		return copyA;
+		
+		return String.join("", closure);
 	}
 	
 	/**
@@ -227,7 +228,7 @@ class RDB {
 	public HashSet<String> findCK(String CA, String A, HashMap<String, String> FDs) {
 		
 		HashSet<String> candidateKeys = new HashSet<>();
-		HashSet<String> combos = findCombos(CA, A, A.length());
+		HashSet<String> combos = findUpToKCombinations(CA, A, A.length());
 		
 		for (String attribute : combos) {
 
