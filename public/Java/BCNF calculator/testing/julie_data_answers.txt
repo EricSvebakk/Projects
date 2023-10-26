@@ -1,0 +1,5 @@
+CA = {AN}
+
+CK = {AKN, AFGN}
+
+NK,A = NKA,FG,L,PB
